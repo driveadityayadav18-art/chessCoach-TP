@@ -11,32 +11,34 @@ const ROOK_GLB = '/rook.glb';
 
 /**
  * Editorial Desktop Flight Stations (>= 768px)
- * 0: Hero -> Right flank
- * 1: Method -> Left flank
- * 2: Training Arsenal -> Perched on Card 04 (DOM-tracked)
- * 3: Titleholders -> In front of luxury dark card
- * 4: Footer -> Sinks into floor
+ * 0: Hero -> Right flank focal sculpture
+ * 1: Match-Reel Cinema -> Retreats cleanly to far left flank so the film canvas stays unobstructed
+ * 2: Method -> Left flank
+ * 3: Curriculum -> Perched on Chessboard Workbench (DOM-tracked)
+ * 4: Pedigree & Access -> Right edge sculptural accent
+ * 5: Footer -> Sinks cleanly out of frame
  */
 const KEYFRAMES_DESKTOP = [
-  { x: 0.00,  y: -0.02, z: 0.00,  s: 1.15, yaw: 16,  pitch: 4,  roll: -1 }, // 0: Hero
-  { x: -0.35, y: -0.02, z: -0.15, s: 0.95, yaw: -25, pitch: 4,  roll:  3 }, // 1: Method
-  { x: 0.36,  y: -0.10, z: -0.08, s: 0.68, yaw: 28,  pitch: 4,  roll: -1 }, // 2: Curriculum (Perched on Card 04)
-  { x: 0.35,  y: -0.04, z: -0.12, s: 0.85, yaw: 38,  pitch: -2, roll: -3 }, // 3: Titleholders
-  { x: 0.45,  y: -2.50, z: -0.40, s: 0.30, yaw: 10,  pitch:  0, roll:  0 }, // 4: Footer (sinks cleanly away)
+  { x: 0.30,  y: -0.02, z: 0.00,  s: 1.05, yaw: 18,  pitch: 4,  roll: -1 }, // 0: Hero
+  { x: -0.58, y: 0.14,  z: -0.35, s: 0.56, yaw: -32, pitch: 2,  roll:  2 }, // 1: Match Reel (flank)
+  { x: -0.35, y: -0.02, z: -0.15, s: 0.94, yaw: -25, pitch: 4,  roll:  3 }, // 2: Method
+  { x: 0.36,  y: -0.10, z: -0.08, s: 0.68, yaw: 28,  pitch: 4,  roll: -1 }, // 3: Curriculum (Perched)
+  { x: 0.38,  y: -0.04, z: -0.14, s: 0.82, yaw: 38,  pitch: -2, roll: -3 }, // 4: Access
+  { x: 0.45,  y: -2.50, z: -0.40, s: 0.30, yaw: 10,  pitch:  0, roll:  0 }, // 5: Footer
 ];
 
 /**
  * Mobile Flight Stations (< 768px)
  */
 const KEYFRAMES_MOBILE = [
-  { x: 0.00, y: 0.15,  z: 0.00,  s: 0.58, yaw: 25,  pitch: 8,  roll: -6 },
-  { x: 0.00, y: 0.22,  z: -0.10, s: 0.55, yaw: -20, pitch: 3,  roll: 2 },
-  { x: 0.00, y: 0.05,  z: -0.05, s: 0.50, yaw: 25,  pitch: 2,  roll: -1 },
-  { x: 0.00, y: 0.18,  z: -0.08, s: 0.55, yaw: 30,  pitch: -2, roll: -2 },
+  { x: 0.00, y: 0.16,  z: 0.00,  s: 0.52, yaw: 25,  pitch: 8,  roll: -6 },
+  { x: 0.00, y: 0.36,  z: -0.25, s: 0.38, yaw: -15, pitch: 4,  roll: 2 },
+  { x: 0.00, y: 0.22,  z: -0.10, s: 0.50, yaw: -20, pitch: 3,  roll: 2 },
+  { x: 0.00, y: 0.05,  z: -0.05, s: 0.48, yaw: 25,  pitch: 2,  roll: -1 },
+  { x: 0.00, y: 0.18,  z: -0.08, s: 0.50, yaw: 30,  pitch: -2, roll: -2 },
   { x: 0.00, y: -2.50, z: -0.30, s: 0.25, yaw: 0,   pitch: 0,  roll: 0 },
 ];
 
-// Continuous 3D Catmull-Rom Splines for C1-smooth spatial navigation
 const splineDesktop = new THREE.CatmullRomCurve3(
   KEYFRAMES_DESKTOP.map((k) => new THREE.Vector3(k.x, k.y, k.z)),
   false,
@@ -60,10 +62,6 @@ function clamp(v: number, min: number, max: number) {
   return Math.min(Math.max(v, min), max);
 }
 
-/**
- * Quintic smoothstep for seamless, jerk-free landing on Card 04
- * S(t) = 6t^5 - 15t^4 + 10t^3
- */
 function smoothstepQuintic(t: number): number {
   const ct = clamp(t, 0, 1);
   return ct * ct * ct * (ct * (ct * 6 - 15) + 10);
@@ -76,11 +74,8 @@ interface LayoutCache {
   vh: number;
 }
 
-const SECTION_IDS = ['top', 'about', 'curriculum', 'access', 'contact'];
+const SECTION_IDS = ['top', 'reel', 'about', 'curriculum', 'access', 'contact'];
 
-/**
- * Evaluates continuous spline trajectory and dynamic targets at fractional progress p in [0, 4]
- */
 function targetAt(p: number, isMobile: boolean) {
   const K = isMobile ? KEYFRAMES_MOBILE : KEYFRAMES_DESKTOP;
   const n = K.length - 1;
@@ -93,16 +88,14 @@ function targetAt(p: number, isMobile: boolean) {
   const idx = Math.min(n - 1, Math.floor(clampedP));
   const frac = clampedP - idx;
 
-  // Continuous parabolic lift arc during inter-station travel
-  const liftFactor = idx === 0 ? 0.16 : idx === 1 ? 0.14 : idx === 2 ? 0.08 : 0.03;
+  const liftFactor = idx === 0 ? 0.14 : idx === 1 ? 0.12 : idx === 2 ? 0.14 : idx === 3 ? 0.08 : 0.03;
   const lift = Math.sin(frac * Math.PI) * liftFactor;
 
-  // Smooth scalar interpolation (Scale, Yaw, Pitch, Roll) using smooth Hermite curve
   const k0 = K[idx];
   const k1 = K[idx + 1] || k0;
   const t = frac * frac * (3 - 2 * frac);
 
-  const s = THREE.MathUtils.lerp(k0.s, k1.s, t) * (1 + Math.sin(frac * Math.PI) * 0.035);
+  const s = THREE.MathUtils.lerp(k0.s, k1.s, t) * (1 + Math.sin(frac * Math.PI) * 0.03);
   const yaw = lerpAngle(k0.yaw, k1.yaw, t);
   const pitch = THREE.MathUtils.lerp(k0.pitch, k1.pitch, t);
   const roll = THREE.MathUtils.lerp(k0.roll, k1.roll, t);
@@ -127,16 +120,20 @@ export default function RookCanvas() {
     const loader = loaderRef.current;
     if (!canvas) return;
 
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
     let isDestroyed = false;
     let animId = 0;
     let pageLoaded = false;
     let modelLoaded = false;
+    let contextLost = false;
 
     const mouse = { x: 0, y: 0, sx: 0, sy: 0 };
 
-    // Layout Cache: zero DOM reflows inside requestAnimationFrame loop
     const layoutCache: LayoutCache = {
-      tops: [0, 800, 1600, 2400, 3200],
+      tops: [0, 800, 1600, 2400, 3200, 4000],
       perchDoc: null,
       vw: typeof window !== 'undefined' ? window.innerWidth : 1200,
       vh: typeof window !== 'undefined' ? window.innerHeight : 800,
@@ -158,7 +155,6 @@ export default function RookCanvas() {
           return Math.max(0, rect.top + scrollY);
         });
 
-        // Ensure strictly increasing section offsets
         for (let i = 1; i < tops.length; i++) {
           if (tops[i] <= tops[i - 1]) {
             tops[i] = tops[i - 1] + vh;
@@ -186,7 +182,6 @@ export default function RookCanvas() {
 
     updateLayoutCache();
 
-    // Fast, reflow-free section progress lookup via cached tops
     const getProgressFromScroll = (scrollY: number): number => {
       const { tops, vh } = layoutCache;
       if (!tops || tops.length < 2) return scrollY / vh;
@@ -207,6 +202,7 @@ export default function RookCanvas() {
     };
 
     const handlePointerMove = (e: PointerEvent) => {
+      if (prefersReducedMotion) return;
       mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
     };
@@ -227,27 +223,37 @@ export default function RookCanvas() {
 
     const fallbackTimeout = setTimeout(() => {
       markLoaded(false);
-    }, 2500);
+    }, 2000);
 
-    // Three.js instances
     let renderer: THREE.WebGLRenderer | null = null;
     let scene: THREE.Scene | null = null;
     let camera: THREE.PerspectiveCamera | null = null;
     let flight: THREE.Group | null = null;
     let pieceRoot: THREE.Group | null = null;
     let holder: THREE.Group | null = null;
-    let dirLight1: THREE.DirectionalLight | null = null;
-    let dirLight2: THREE.DirectionalLight | null = null;
-    let clayRimLight: THREE.DirectionalLight | null = null;
+    let keyLight: THREE.DirectionalLight | null = null;
+    let fillLight: THREE.DirectionalLight | null = null;
+    let copperRimLight: THREE.DirectionalLight | null = null;
+    let crownLight: THREE.SpotLight | null = null;
     let shadowMat: THREE.MeshBasicMaterial | null = null;
 
+    const handleContextLost = (e: Event) => {
+      e.preventDefault();
+      contextLost = true;
+    };
+    const handleContextRestored = () => {
+      contextLost = false;
+    };
+    canvas.addEventListener('webglcontextlost', handleContextLost);
+    canvas.addEventListener('webglcontextrestored', handleContextRestored);
+
     try {
-      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.setSize(window.innerWidth, window.innerHeight, false);
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.15;
+      renderer.toneMappingExposure = 1.12;
 
       scene = new THREE.Scene();
       const pmremGenerator = new THREE.PMREMGenerator(renderer);
@@ -257,26 +263,34 @@ export default function RookCanvas() {
       camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 100);
       camera.position.set(0, 0, 10);
 
-      // Clean Obsidian Studio Lighting (Sculptural Marble & Amber Rim)
-      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x050508, 1.2);
+      // Calibrated Three-Point Studio Lighting + Warm Kiln Ember Rim
+      const hemiLight = new THREE.HemisphereLight(0xf7efe4, 0x1c1714, 0.85);
       scene.add(hemiLight);
 
-      dirLight1 = new THREE.DirectionalLight(0xffffff, 3.0);
-      dirLight1.position.set(4, 5, 6);
-      scene.add(dirLight1);
+      // Key Light (Warm tungsten-cream front-right)
+      keyLight = new THREE.DirectionalLight(0xf7efe4, 2.55);
+      keyLight.position.set(4.5, 5.2, 5.8);
+      scene.add(keyLight);
 
-      dirLight2 = new THREE.DirectionalLight(0xe2e8f0, 1.8);
-      dirLight2.position.set(-5, 2, -4);
-      scene.add(dirLight2);
+      // Muted Slate Fill Light
+      fillLight = new THREE.DirectionalLight(0x94a3b8, 1.15);
+      fillLight.position.set(-5.2, 1.8, 3.5);
+      scene.add(fillLight);
 
-      // Warm Amber Micro-Voltage Rim Light (#FF801F)
-      clayRimLight = new THREE.DirectionalLight(0xff801f, 1.4);
-      clayRimLight.position.set(-4, 3, -3);
-      scene.add(clayRimLight);
+      // Sculpted Kiln Ember Rim Light separating silhouette from ash ground
+      copperRimLight = new THREE.DirectionalLight(0xd96e2c, 3.0);
+      copperRimLight.position.set(-4.2, 3.4, -3.8);
+      scene.add(copperRimLight);
 
-      const studioRimLight = new THREE.DirectionalLight(0xffffff, 2.8);
-      studioRimLight.position.set(3.5, 4, -4);
-      scene.add(studioRimLight);
+      // Crisp Back-Right Rim Accent
+      const backRimLight = new THREE.DirectionalLight(0xf3dec4, 1.9);
+      backRimLight.position.set(3.8, 4.2, -4.5);
+      scene.add(backRimLight);
+
+      // Overhead Crown Specular Accent
+      crownLight = new THREE.SpotLight(0xffcfa3, 2.2, 18, Math.PI / 5, 0.65, 1.2);
+      crownLight.position.set(0.5, 6.0, 2.0);
+      scene.add(crownLight);
 
       flight = new THREE.Group();
       pieceRoot = new THREE.Group();
@@ -285,22 +299,21 @@ export default function RookCanvas() {
       flight.add(pieceRoot);
       pieceRoot.add(holder);
 
-      // Soft Ground Contact Shadow Disc
       const shadowCanvas = document.createElement('canvas');
       shadowCanvas.width = 256;
       shadowCanvas.height = 256;
       const sCtx = shadowCanvas.getContext('2d');
       if (sCtx) {
         const sGrad = sCtx.createRadialGradient(128, 128, 10, 128, 128, 128);
-        sGrad.addColorStop(0, 'rgba(15, 23, 42, 0.35)');
-        sGrad.addColorStop(0.3, 'rgba(15, 23, 42, 0.18)');
-        sGrad.addColorStop(0.65, 'rgba(15, 23, 42, 0.04)');
-        sGrad.addColorStop(1, 'rgba(15, 23, 42, 0)');
+        sGrad.addColorStop(0, 'rgba(217, 110, 44, 0.16)');
+        sGrad.addColorStop(0.35, 'rgba(22, 18, 16, 0.28)');
+        sGrad.addColorStop(0.7, 'rgba(14, 11, 9, 0.08)');
+        sGrad.addColorStop(1, 'rgba(14, 11, 9, 0)');
         sCtx.fillStyle = sGrad;
         sCtx.fillRect(0, 0, 256, 256);
       }
       const shadowTex = new THREE.CanvasTexture(shadowCanvas);
-      const shadowGeo = new THREE.PlaneGeometry(1.6, 1.6);
+      const shadowGeo = new THREE.PlaneGeometry(1.65, 1.65);
       shadowMat = new THREE.MeshBasicMaterial({
         map: shadowTex,
         transparent: true,
@@ -324,8 +337,11 @@ export default function RookCanvas() {
             if ((child as THREE.Mesh).isMesh) {
               const mesh = child as THREE.Mesh;
               mesh.frustumCulled = false;
-              if (mesh.material && (mesh.material as THREE.MeshStandardMaterial).envMapIntensity !== undefined) {
-                (mesh.material as THREE.MeshStandardMaterial).envMapIntensity = 1.0;
+              const mat = mesh.material as THREE.MeshStandardMaterial;
+              if (mat) {
+                if (mat.envMapIntensity !== undefined) mat.envMapIntensity = 1.25;
+                if (mat.roughness !== undefined) mat.roughness = Math.min(mat.roughness, 0.42);
+                if (mat.metalness !== undefined) mat.metalness = Math.max(mat.metalness, 0.18);
               }
             }
           });
@@ -360,24 +376,23 @@ export default function RookCanvas() {
       markLoaded(false);
     }
 
-    // Initialize Lenis smooth scroll
     let lenis: Lenis | null = null;
-    try {
-      lenis = new Lenis({
-        duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        orientation: 'vertical',
-        gestureOrientation: 'vertical',
-        smoothWheel: true,
-        touchMultiplier: 2,
-      });
-
-      (window as unknown as { __lenis: Lenis }).__lenis = lenis;
-    } catch (e) {
-      console.warn('Lenis setup note:', e);
+    if (!prefersReducedMotion) {
+      try {
+        lenis = new Lenis({
+          duration: 1.15,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          orientation: 'vertical',
+          gestureOrientation: 'vertical',
+          smoothWheel: true,
+          touchMultiplier: 1.8,
+        });
+        (window as unknown as { __lenis: Lenis }).__lenis = lenis;
+      } catch {
+        // Fallback to native scroll
+      }
     }
 
-    // Scroll reveal observer
     const sections = document.querySelectorAll('main > section, footer');
     const revealObserver = new IntersectionObserver(
       (entries) => {
@@ -387,7 +402,7 @@ export default function RookCanvas() {
           }
         });
       },
-      { threshold: 0.25 }
+      { threshold: 0.15 }
     );
     sections.forEach((s) => revealObserver.observe(s));
 
@@ -423,10 +438,13 @@ export default function RookCanvas() {
     };
     window.addEventListener('resize', handleResize);
 
-    // Kinetic reaction when user switches curriculum pillar tabs
+    // Refresh layout cache slightly after mount so dynamic components report accurate heights
+    const cacheTimer = setTimeout(updateLayoutCache, 600);
+
     let tabHopImpulse = 0;
     let tabTiltImpulse = 0;
     const handleTabChange = (e: Event) => {
+      if (prefersReducedMotion) return;
       const customEvent = e as CustomEvent<{ index: number }>;
       const idx = customEvent.detail?.index ?? 0;
       tabHopImpulse = 0.055;
@@ -434,8 +452,7 @@ export default function RookCanvas() {
     };
     window.addEventListener('chess-tab-change', handleTabChange);
 
-    // Initial state matching station 0
-    const initialTarget = targetAt(0, window.innerWidth < 768);
+    const initialTarget = targetAt(0, typeof window !== 'undefined' && window.innerWidth < 768);
     const cur = {
       x: initialTarget.x,
       y: initialTarget.y,
@@ -448,7 +465,6 @@ export default function RookCanvas() {
       bankPitch: 0,
     };
 
-    // Animation Loop
     const clock = new THREE.Clock();
 
     const animate = (time: number) => {
@@ -459,25 +475,23 @@ export default function RookCanvas() {
         lenis.raf(time);
       }
 
-      if (!renderer || !scene || !camera || !flight || !pieceRoot) return;
+      if (contextLost || !renderer || !scene || !camera || !flight || !pieceRoot) return;
 
       const dt = Math.min(clock.getDelta(), 0.05);
-      const t = clock.getElapsedTime();
+      const t = prefersReducedMotion ? 0 : clock.getElapsedTime();
 
       const scrollY = lenis ? lenis.scroll : (window.scrollY || window.pageYOffset || 0);
       const isMobile = window.innerWidth < 768;
       const p = getProgressFromScroll(scrollY);
       const target = targetAt(p, isMobile);
 
-      // --- Seamless Card 04 Perch Landing (Quintic Smoothstep Blending) ---
-      // Evaluates landing coordinates using cached document Y (zero reflows)
       const curriculumIdx = SECTION_IDS.indexOf('curriculum');
       const targetPerchP = curriculumIdx >= 0 ? curriculumIdx : 3.0;
       const perchDist = Math.abs(p - targetPerchP);
       const perchBlendRange = 0.45;
       const perchProximity = perchDist < perchBlendRange ? 1 - perchDist / perchBlendRange : 0;
       const perchWeight = smoothstepQuintic(perchProximity);
-      const hoverScale = 1 - perchWeight;
+      const hoverScale = prefersReducedMotion ? 0 : 1 - perchWeight;
 
       const fovRad = (camera.fov * Math.PI) / 180;
       const halfH = Math.tan(fovRad / 2) * camera.position.z;
@@ -496,84 +510,75 @@ export default function RookCanvas() {
         target.y = THREE.MathUtils.lerp(target.y, perchTargetY, perchWeight);
       }
 
-      // Add kinetic tab hop & tilt impulse (active in Curriculum)
       target.y += tabHopImpulse;
       target.yaw += tabTiltImpulse;
 
       tabHopImpulse = THREE.MathUtils.damp(tabHopImpulse, 0, 8.0, dt);
       tabTiltImpulse = THREE.MathUtils.damp(tabTiltImpulse, 0, 6.0, dt);
 
-      // --- Frame-Rate Independent Exponential Damping (THREE.MathUtils.damp) ---
-      // Mathematically identical behavior at 60Hz, 120Hz, and 144Hz displays
       const prevX = cur.x;
       const prevY = cur.y;
 
-      cur.x = THREE.MathUtils.damp(cur.x, target.x, 8.2, dt);
-      cur.y = THREE.MathUtils.damp(cur.y, target.y, 8.2, dt);
-      cur.z = THREE.MathUtils.damp(cur.z, target.z, 8.2, dt);
+      const dampFactor = prefersReducedMotion ? 100 : 8.2;
+      cur.x = THREE.MathUtils.damp(cur.x, target.x, dampFactor, dt);
+      cur.y = THREE.MathUtils.damp(cur.y, target.y, dampFactor, dt);
+      cur.z = THREE.MathUtils.damp(cur.z, target.z, dampFactor, dt);
 
       cur.s = THREE.MathUtils.damp(cur.s, target.s, 7.0, dt);
       cur.yaw = lerpAngle(cur.yaw, target.yaw, 1 - Math.exp(-dt * 6.5));
       cur.pitch = THREE.MathUtils.damp(cur.pitch, target.pitch, 6.0, dt);
       cur.roll = THREE.MathUtils.damp(cur.roll, target.roll, 6.0, dt);
 
-      // --- Dynamic Bank Tilting & Inertial Drag ---
-      // Leans naturally into turns proportionally to filtered lateral velocity
       const latVel = (cur.x - prevX) / Math.max(dt, 0.001);
       const vertVel = (cur.y - prevY) / Math.max(dt, 0.001);
 
-      const targetBankRoll = cur.roll - clamp(latVel * 16.0, -18, 18);
-      const targetBankPitch = cur.pitch - clamp(vertVel * 14.0, -12, 12);
+      const targetBankRoll = cur.roll - (prefersReducedMotion ? 0 : clamp(latVel * 15.0, -16, 16));
+      const targetBankPitch = cur.pitch - (prefersReducedMotion ? 0 : clamp(vertVel * 12.0, -10, 10));
       cur.bankRoll = THREE.MathUtils.damp(cur.bankRoll, targetBankRoll, 7.0, dt);
       cur.bankPitch = THREE.MathUtils.damp(cur.bankPitch, targetBankPitch, 7.0, dt);
 
-      // --- Filtered Pointer Parallax ---
       mouse.sx = THREE.MathUtils.damp(mouse.sx, mouse.x, 3.5, dt);
       mouse.sy = THREE.MathUtils.damp(mouse.sy, mouse.y, 3.5, dt);
 
-      // Subtle breath hover (suppressed when settled on Card 04)
-      const hover = (Math.sin(t * 1.6) * 0.025 + Math.sin(t * 2.7) * 0.01) * hoverScale;
+      const hover = (Math.sin(t * 1.5) * 0.022 + Math.sin(t * 2.4) * 0.009) * hoverScale;
 
-      // Section 03 Clay rim lighting when near Titleholders section (p around 3.0)
-      if (clayRimLight) {
-        const darkProximity = Math.max(0, 1 - Math.abs(p - 3.0) * 1.2);
-        const darkIntensity = Math.pow(darkProximity, 1.4);
-        const heroProximity = Math.max(0, 1 - p * 1.5);
-        clayRimLight.intensity = darkIntensity * 3.6 + heroProximity * 0.85;
-        if (dirLight1) dirLight1.intensity = 2.6 - darkIntensity * 0.8;
-        if (dirLight2) dirLight2.intensity = 1.8 + darkIntensity * 0.6;
+      // Dynamic copper rim intensity across sections
+      if (copperRimLight) {
+        const accessProximity = Math.max(0, 1 - Math.abs(p - 4.0) * 1.1);
+        const heroProximity = Math.max(0, 1 - p * 1.3);
+        copperRimLight.intensity = 2.1 + Math.pow(accessProximity, 1.4) * 2.1 + heroProximity * 1.1;
+        if (keyLight) keyLight.intensity = 2.45 - accessProximity * 0.45;
+        if (fillLight) fillLight.intensity = 1.1 + accessProximity * 0.35;
       }
 
-      // Soft ground contact shadow disc fades as piece lifts into flight
       if (shadowMat) {
-        shadowMat.opacity = clamp(0.65 * (1 - p * 0.9), 0, 0.65);
+        shadowMat.opacity = clamp(0.65 * (1 - p * 0.8), 0, 0.65);
       }
 
-      // Graceful Exit Before Footer: fades out completely before the footer to prevent any CTA collisions
+      // Gently lower Rook opacity while traversing Match-Reel Cinema (#reel, p ~ 1.0) and fade out before Footer
       if (canvas && modelLoaded) {
-        // Access is section 4. Fades out between p = 4.1 and 4.4, completely invisible before Footer (p = 5.0)
-        const footerExitAlpha = p < 4.1 ? 1 : clamp(1 - (p - 4.1) / 0.3, 0, 1);
-        canvas.style.opacity = `${footerExitAlpha}`;
-        canvas.style.visibility = footerExitAlpha <= 0.001 ? 'hidden' : 'visible';
+        const reelFade = 1 - Math.max(0, 1 - Math.abs(p - 1.0) * 1.65) * 0.72;
+        const footerExitAlpha = p < 4.55 ? 1 : clamp(1 - (p - 4.55) / 0.35, 0, 1);
+        const finalAlpha = Math.min(reelFade, footerExitAlpha);
+        canvas.style.opacity = `${finalAlpha}`;
+        canvas.style.visibility = finalAlpha <= 0.001 ? 'hidden' : 'visible';
       }
 
-      // Set final smoothed transform
       flight.position.set(
-        cur.x * halfW + Math.sin(t * 1.1) * 0.015 * hoverScale + mouse.sx * 0.045,
-        cur.y * halfH + hover * halfH * 0.35 + mouse.sy * 0.035 * hoverScale,
-        cur.z + Math.sin(t * 0.8) * 0.06 * hoverScale
+        cur.x * halfW + Math.sin(t * 1.1) * 0.012 * hoverScale + mouse.sx * 0.04,
+        cur.y * halfH + hover * halfH * 0.32 + mouse.sy * 0.03 * hoverScale,
+        cur.z + Math.sin(t * 0.8) * 0.05 * hoverScale
       );
 
       flight.scale.setScalar(halfH * 2 * 0.36 * cur.s);
 
-      // Controlled Grandmaster Yaw & Dynamic Banking Rotation
       const yawRad = THREE.MathUtils.degToRad(cur.yaw + mouse.sx * 5.0);
       flight.rotation.set(0, yawRad, 0);
 
       pieceRoot.rotation.set(
         THREE.MathUtils.degToRad(cur.bankRoll),
         0,
-        THREE.MathUtils.degToRad(cur.bankPitch + mouse.sy * 2.2),
+        THREE.MathUtils.degToRad(cur.bankPitch + mouse.sy * 2.0),
         'YZX'
       );
 
@@ -588,6 +593,9 @@ export default function RookCanvas() {
       isDestroyed = true;
       cancelAnimationFrame(animId);
       clearTimeout(fallbackTimeout);
+      clearTimeout(cacheTimer);
+      canvas.removeEventListener('webglcontextlost', handleContextLost);
+      canvas.removeEventListener('webglcontextrestored', handleContextRestored);
       window.removeEventListener('pointermove', handlePointerMove);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('chess-tab-change', handleTabChange);
@@ -605,12 +613,12 @@ export default function RookCanvas() {
   return (
     <>
       <div className="loader" id="loader" ref={loaderRef}>
-        <svg viewBox="0 0 40 40">
+        <svg viewBox="0 0 40 40" aria-hidden="true">
           <path d="M8 36h24v-4H8z M12 32l1.5-14h13L28 32z M9 18V8h4v4h4V8h6v4h4V8h4v10z" />
         </svg>
       </div>
 
-      <canvas id="rook" ref={canvasRef} style={{ zIndex: 35, pointerEvents: 'none' }} />
+      <canvas id="rook" ref={canvasRef} aria-hidden="true" style={{ zIndex: 35, pointerEvents: 'none' }} />
     </>
   );
 }

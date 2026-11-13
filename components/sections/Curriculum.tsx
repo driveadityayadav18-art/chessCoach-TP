@@ -1,31 +1,56 @@
 'use client';
 
 import React from 'react';
+import { motion } from 'motion/react';
 import FlexibleAccordion from '../FlexibleAccordion';
+import BlurText from '../reactbits/BlurText';
 
 interface CurriculumProps {
   onOpenBooking?: () => void;
 }
 
+const EASE = [0.16, 1, 0.3, 1] as const;
+
 export default function Curriculum({ onOpenBooking = () => {} }: CurriculumProps) {
   return (
-    <section className="curriculum bg-canvas py-20 sm:py-28 border-t border-border-subtle" id="curriculum" data-theme="dark">
-      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 relative z-[1]">
-        {/* Section Header */}
-        <div className="max-w-3xl mb-8 sm:mb-10">
-          <h2 className="reveal d1 font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-[-0.03em] text-ink-primary leading-[1.08]">
-            Proven Rating Milestones &amp; Tactical Pedagogy
-          </h2>
+    <section
+      className="curriculum bg-paper py-[var(--section-gap-s)] border-t border-rule"
+      id="curriculum"
+      data-theme="dark"
+    >
+      <div className="kiln-container relative z-[1]">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.25 }}
+          transition={{ duration: 0.55, ease: EASE }}
+          className="max-w-3xl mb-10 sm:mb-12"
+        >
+          <BlurText
+            as="h2"
+            text="Proven rating milestones and tactical pedagogy"
+            animateBy="words"
+            direction="bottom"
+            delay={45}
+            stepDuration={0.38}
+            blur={7}
+            distance={16}
+            className="font-serif text-[length:var(--text-section)] font-medium tracking-[-0.025em] text-ink leading-[1.06]"
+          />
 
-          <p className="reveal d2 mt-3 text-sm sm:text-base text-ink-muted leading-relaxed font-sans max-w-xl">
-            Documented rating plateau breakthroughs from club to master level. How Coach Aditya&apos;s candidate calculation trees and root pawn ecology replace brittle memorization with genuine board understanding.
+          <p className="mt-4 text-sm sm:text-base text-muted leading-relaxed font-sans max-w-xl">
+            Documented plateau breakthroughs from club to master level. Inspect candidate calculation trees and test your own move selection directly on the board.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Flexible Accordion (Showcase Tabs) */}
-        <div className="reveal d3">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.6, delay: 0.06, ease: EASE }}
+        >
           <FlexibleAccordion onOpenBooking={onOpenBooking} />
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -1,68 +1,151 @@
-/* Resend Editorial Design System · Aditya Yadav Master Chess Mentorship */
+/* Hallmark · Kiln (Ember) Design Tokens · OKLCH Dark Workshop Palette */
 :root {
-  /* Canvas & Obsidian Surfaces */
-  --canvas: #000000;
-  --canvas-subtle: #06060A;
-  --canvas-card: #0A0A0C;
-  --canvas-elevated: #101012;
-  --canvas-sunken: #040406;
+  /* Kiln Surface Ladder (OKLCH Dark Ash Ground & Smoked Wells) */
+  --color-paper: oklch(13% 0.012 40);
+  --color-paper-2: oklch(17.5% 0.016 40);
+  --color-paper-3: oklch(22% 0.018 40);
 
-  /* Typography & High-Contrast Ink */
-  --ink-primary: #FCFDFF;
-  --ink-secondary: rgba(252, 253, 255, 0.86);
-  --ink-muted: #A1A4A5;
-  --ink-faint: #888E90;
-  --ink-charcoal: rgba(252, 253, 255, 0.70);
+  /* Cream Ink Ramp & Hairlines */
+  --color-ink: oklch(94% 0.02 80);
+  --color-ink-2: oklch(84% 0.025 70);
+  --color-muted: oklch(72% 0.03 60);
+  --color-rule: oklch(96% 0.01 80 / 0.12);
+  --color-rule-strong: oklch(96% 0.01 80 / 0.22);
 
-  /* Translucent Hairline Borders (Zero drop shadows) */
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-strong: rgba(255, 255, 255, 0.14);
-  --divider-soft: rgba(255, 255, 255, 0.04);
+  /* Ember Signal (Fill, Active Plot Point, Focus Ring Only — Never Text) */
+  --color-accent: oklch(70% 0.2 45);
+  --color-accent-hover: oklch(74% 0.19 46);
+  --color-accent-ink: oklch(14% 0.02 40);
+  --color-focus: oklch(76% 0.19 56);
+  --color-success: oklch(72% 0.14 150);
+  --color-error: oklch(64% 0.21 25);
 
-  /* Primary Action Button (Inverted High-Contrast Resend Pill) */
-  --btn-primary-bg: #FCFDFF;
-  --btn-primary-text: #000000;
-  --btn-primary-hover: #E2E8F0;
+  /* Chessboard & Staunton Piece Surface Tokens */
+  --board-light: oklch(26% 0.02 45);
+  --board-light-hover: oklch(30% 0.022 45);
+  --board-dark: oklch(18% 0.015 40);
+  --board-dark-hover: oklch(21% 0.018 40);
+  --board-selected: oklch(38% 0.09 42);
+  --board-highlight: oklch(29% 0.05 44);
+  --piece-white: oklch(94% 0.02 78);
+  --piece-black: oklch(20% 0.016 40);
+  --piece-stroke: oklch(78% 0.02 70);
 
-  /* Warm Amber / Copper Atmospheric Micro-Voltage */
-  --accent-amber: #FF801F;
-  --accent-amber-hover: #E06D16;
-  --accent-amber-glow: rgba(255, 128, 31, 0.18);
-  --accent-amber-subtle: rgba(255, 128, 31, 0.08);
-  --accent-clay: #FF801F;
-  --accent-clay-hover: #E06D16;
+  /* Kiln Thermal Evaluation Ramp (Charts & Evaluation Curves Only) */
+  --heat-0: oklch(12% 0.012 40);
+  --heat-1: oklch(22% 0.07 22);
+  --heat-2: oklch(40% 0.16 27);
+  --heat-3: oklch(60% 0.21 36);
+  --heat-4: oklch(76% 0.19 56);
+  --heat-5: oklch(89% 0.14 78);
+  --heat-6: oklch(98% 0.04 95);
 
-  /* Telemetry & Accents */
-  --accent-green: #11FF99;
-  --accent-green-glow: rgba(17, 255, 153, 0.18);
-  --accent-blue: #3B9EFF;
-  --accent-blue-glow: rgba(59, 158, 255, 0.20);
-  --accent-red: #FF2047;
+  /* Typography Roles (Boska + Geist + Geist Mono Outlier) */
+  --font-display: "Boska", var(--font-serif-fallback), Georgia, serif;
+  --font-body: var(--font-sans), "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-outlier: var(--font-mono), "Geist Mono", ui-monospace, monospace;
+  --tracking-display: -0.02em;
+  --display-weight: 500;
 
-  /* Dark Masthead & Card Surfaces */
-  --surface-dark: #000000;
-  --surface-dark-card: #0A0A0C;
-  --surface-elevated: #101012;
-  --surface-deep: #06060A;
-  --border-dark: rgba(255, 255, 255, 0.08);
-  --border-dark-strong: rgba(255, 255, 255, 0.16);
-  --ink-dark-primary: #FCFDFF;
-  --ink-dark-secondary: rgba(252, 253, 255, 0.86);
-  --ink-dark-muted: #A1A4A5;
+  /* Type Scale (1440px Baseline) */
+  --text-display: clamp(2.85rem, 5.6vw, 5.25rem);
+  --text-display-s: clamp(2.1rem, 4.1vw, 3.75rem);
+  --text-section: clamp(2.25rem, 3.6vw, 3.25rem);
+  --text-title: clamp(1.25rem, 1.8vw, 1.5625rem);
+  --text-lead: clamp(1.0625rem, 1.45vw, 1.3125rem);
+  --text-md: 1rem;
+  --text-sm: 0.875rem;
 
-  /* Layout & Geometry */
-  --pad: clamp(20px, 4.2vw, 64px);
-  --container-max: 1280px;
-  --radius-xs: 4px;
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-pill: 9999px;
+  /* Spacing & Rhythm Scale */
+  --space-3xs: 2px;
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+  --space-3xl: 96px;
+  --space-4xl: 144px;
 
-  /* Legacy aliases mapped to Resend tokens */
-  --ink: var(--ink-primary);
-  --muted: var(--ink-muted);
-  --bg: var(--canvas);
-  --accent: var(--accent-amber);
+  --section-gap-s: clamp(72px, 8vw, 120px);
+  --section-gap: clamp(88px, 10vw, 144px);
+  --section-gap-l: clamp(104px, 12vw, 176px);
+
+  /* Layout Container & Geometry */
+  --container-max: 1440px;
+  --gutter: clamp(20px, 4.4vw, 64px);
+  --gap-columns: clamp(20px, 2.2vw, 32px);
+  --pad: var(--gutter);
+
+  --radius-card: 28px;
+  --radius-well: 16px;
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+  --rule-hair: 1px;
+
+  /* Shadow (Photographs & Grounded Built Screens Only — Never With Ring) */
+  --shadow-card: 0 50px 90px -30px oklch(8% 0.01 40 / 0.55);
+
+  /* Motion Timing */
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+  --dur-long: 420ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Z-Index Ladder */
+  --z-base: 1;
+  --z-raised: 10;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-sticky-nav: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+  --z-tooltip: 600;
+
+  /* Semantic App Aliases Mapped to Kiln Tokens */
+  --canvas: var(--color-paper);
+  --canvas-subtle: var(--color-paper-2);
+  --canvas-card: var(--color-paper-2);
+  --canvas-elevated: var(--color-paper-3);
+  --surface-deep: var(--color-paper);
+  --surface-dark: var(--color-paper);
+  --surface-dark-card: var(--color-paper-2);
+
+  --ink-primary: var(--color-ink);
+  --ink-secondary: var(--color-ink-2);
+  --ink-muted: var(--color-muted);
+  --ink-faint: var(--color-muted);
+
+  --border-subtle: var(--color-rule);
+  --border-strong: var(--color-rule-strong);
+  --border-dark: var(--color-rule);
+  --border-dark-strong: var(--color-rule-strong);
+  --divider-soft: var(--color-rule);
+
+  --btn-primary-bg: var(--color-accent);
+  --btn-primary-text: var(--color-accent-ink);
+  --btn-primary-hover: var(--color-accent-hover);
+
+  --accent-amber: var(--color-accent);
+  --accent-amber-hover: var(--color-accent-hover);
+  --accent-amber-glow: color-mix(in oklab, var(--color-accent) 20%, transparent);
+  --accent-amber-subtle: color-mix(in oklab, var(--color-accent) 10%, transparent);
+  --accent-clay: var(--color-accent);
+  --accent-clay-hover: var(--color-accent-hover);
+
+  --accent-green: var(--color-success);
+  --accent-blue: var(--color-ink-2);
+  --accent-red: var(--color-error);
+
+  --ink: var(--color-ink);
+  --muted: var(--color-muted);
+  --bg: var(--color-paper);
+  --accent: var(--color-accent);
 }

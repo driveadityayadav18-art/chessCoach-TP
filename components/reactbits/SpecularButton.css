@@ -1,0 +1,81 @@
+/* Hallmark · v2.0.0 · theme: kiln · genre: atmospheric */
+.specular-button {
+  --sb-radius: var(--radius-pill, 999px);
+  --sb-tint: var(--color-accent);
+  --sb-tint-opacity: 0.92;
+  --sb-text-color: var(--color-accent-ink);
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  margin: 0;
+  border: 0;
+  border-radius: var(--sb-radius);
+  font: inherit;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  color: var(--sb-text-color);
+  background: color-mix(in srgb, var(--sb-tint) calc(var(--sb-tint-opacity) * 100%), transparent);
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.2s ease;
+}
+
+.specular-button:active {
+  transform: scale(0.97);
+}
+
+.specular-button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+.specular-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.specular-button:disabled:active {
+  transform: none;
+}
+
+.specular-button--sm {
+  min-height: 44px;
+  padding: 12px 20px;
+  font-size: 0.875rem;
+}
+
+.specular-button--md {
+  min-height: 48px;
+  padding: 12px 24px;
+  font-size: 0.9375rem;
+}
+
+.specular-button--lg {
+  min-height: 52px;
+  padding: 16px 32px;
+  font-size: 1rem;
+}
+
+.specular-button__light {
+  position: absolute;
+  inset: -24px;
+  z-index: 1;
+  display: block;
+  width: calc(100% + 48px);
+  height: calc(100% + 48px);
+  pointer-events: none;
+}
+
+.specular-button__label {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: inherit;
+}

@@ -2,57 +2,12 @@
 
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { playChessPieceThud } from './SoundToggle';
 import ArrowFillButton from './ArrowFillButton';
+import Counter from './reactbits/Counter';
 import ChessboardPreview from './ChessboardPreview';
-
-export interface CurriculumPillar {
-  pillar: string;
-  category: string;
-  ratingTier: string;
-  title: string;
-  description: string;
-  disciplines: string[];
-}
-
-const PILLARS: CurriculumPillar[] = [
-  {
-    pillar: '01',
-    category: 'Pawn Ecology',
-    ratingTier: '1400–1850 Elo',
-    title: 'Carlsbad Structure Mastery',
-    description:
-      'Transitioning from reactive defense to proactive minority attack planning. Master outpost anchors, thematic pawn breaks, and prophylactic clamping in Queens Gambit structures.',
-    disciplines: ['Minority attack execution', 'Outpost anchoring', 'Pawn break intuition'],
-  },
-  {
-    pillar: '02',
-    category: 'Calculation',
-    ratingTier: '1600–2050 Elo',
-    title: 'Candidate Move Tree Pruning',
-    description:
-      'Eliminating tactical blindness and time-trouble paralysis. Replace disorganized calculation with Kotov-grade candidate move selection, forcing check/capture priorities, and visualization trees.',
-    disciplines: ['Candidate identification', 'Forcing variations', 'Visualization precision'],
-  },
-  {
-    pillar: '03',
-    category: 'Endgames',
-    ratingTier: '1800–2200 Elo',
-    title: 'Theoretical Rook Endgames',
-    description:
-      'Converting microscopic advantages into clean tournament wins. Deep study of Lucena and Philidor techniques, cutting off the king, active rook placement over passive defense, and pawn races.',
-    disciplines: ['Lucena / Philidor mastery', 'Rook activity priority', 'Pawn race geometry'],
-  },
-  {
-    pillar: '04',
-    category: 'Prophylaxis',
-    ratingTier: '2000–2350+ Elo',
-    title: 'Grandmaster Prophylaxis & Prep',
-    description:
-      'Restricting active counterplay and building tournament psychological stamina. Techniques derived from collaborative preparation with elite Grandmasters to defuse opponent plans before they materialize.',
-    disciplines: ['Counterplay neutralization', 'Color complex clamping', 'Psychological resilience'],
-  },
-];
+import { CURRICULUM_STUDIES } from '@/lib/chessStudies';
 
 interface FlexibleAccordionProps {
   onOpenBooking: () => void;
@@ -70,60 +25,57 @@ export default function FlexibleAccordion({ onOpenBooking }: FlexibleAccordionPr
   }, []);
 
   const nextTab = useCallback(() => {
-    const nextIdx = (activeIndex + 1) % PILLARS.length;
-    switchTab(nextIdx);
+    switchTab((activeIndex + 1) % CURRICULUM_STUDIES.length);
   }, [activeIndex, switchTab]);
 
   const prevTab = useCallback(() => {
-    const prevIdx = (activeIndex - 1 + PILLARS.length) % PILLARS.length;
-    switchTab(prevIdx);
+    switchTab((activeIndex - 1 + CURRICULUM_STUDIES.length) % CURRICULUM_STUDIES.length);
   }, [activeIndex, switchTab]);
 
   const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
     if (e.key === 'ArrowRight') {
       e.preventDefault();
-      const nextIdx = (index + 1) % PILLARS.length;
+      const nextIdx = (index + 1) % CURRICULUM_STUDIES.length;
       switchTab(nextIdx);
-      const nextBtn = document.getElementById(`pillar-tab-${nextIdx}`);
-      nextBtn?.focus();
+      document.getElementById(`pillar-tab-${nextIdx}`)?.focus();
     } else if (e.key === 'ArrowLeft') {
       e.preventDefault();
-      const prevIdx = (index - 1 + PILLARS.length) % PILLARS.length;
+      const prevIdx = (index - 1 + CURRICULUM_STUDIES.length) % CURRICULUM_STUDIES.length;
       switchTab(prevIdx);
-      const prevBtn = document.getElementById(`pillar-tab-${prevIdx}`);
-      prevBtn?.focus();
+      document.getElementById(`pillar-tab-${prevIdx}`)?.focus();
     } else if (e.key === 'Home') {
       e.preventDefault();
       switchTab(0);
       document.getElementById('pillar-tab-0')?.focus();
     } else if (e.key === 'End') {
       e.preventDefault();
-      switchTab(PILLARS.length - 1);
-      document.getElementById(`pillar-tab-${PILLARS.length - 1}`)?.focus();
+      switchTab(CURRICULUM_STUDIES.length - 1);
+      document.getElementById(`pillar-tab-${CURRICULUM_STUDIES.length - 1}`)?.focus();
     }
   };
 
-  const current = PILLARS[activeIndex];
+  const current = CURRICULUM_STUDIES[activeIndex];
+  const ratingMatch = current.ratingTier.match(/(\d+)\s+to\s+(\d+)(\+)?/);
+  const minElo = ratingMatch ? Number(ratingMatch[1]) : 1400;
+  const maxElo = ratingMatch ? Number(ratingMatch[2]) : 1850;
+  const hasPlus = Boolean(ratingMatch?.[3]);
 
   return (
     <div className="w-full relative z-10">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
-        
-        {/* Left Content Card - Resend Surface Card (12px radius, hairline border) */}
-        <div className="lg:col-span-5 flex flex-col justify-between p-6 sm:p-8 rounded-xl bg-surface-card border border-border-subtle relative z-10 hover:border-border-strong transition-[border-color] duration-200">
-          
-          {/* Top Tabs Header with ARIA Tablist */}
-          <div className="w-full pb-3 sm:pb-4 border-b border-border-subtle">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
+        {/* Left Editorial Study Index (Zero Box Chrome) */}
+        <div className="lg:col-span-5 flex flex-col justify-between py-2">
+          <div className="w-full pb-4 border-b border-rule">
             <div
               role="tablist"
-              aria-label="Pedagogical Case Studies"
-              className="flex items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar py-0.5"
+              aria-label="Pedagogical case studies"
+              className="flex items-center gap-1.5 overflow-x-auto no-scrollbar"
             >
-              {PILLARS.map((p, idx) => {
+              {CURRICULUM_STUDIES.map((study, idx) => {
                 const isActive = idx === activeIndex;
                 return (
                   <button
-                    key={p.pillar}
+                    key={study.pillar}
                     id={`pillar-tab-${idx}`}
                     role="tab"
                     type="button"
@@ -132,136 +84,131 @@ export default function FlexibleAccordion({ onOpenBooking }: FlexibleAccordionPr
                     tabIndex={isActive ? 0 : -1}
                     onClick={() => switchTab(idx)}
                     onKeyDown={(e) => handleKeyDown(e, idx)}
-                    className={`font-sans text-xs sm:text-[13px] tracking-normal whitespace-nowrap px-3 py-1.5 rounded-md relative transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-ink-primary ${
+                    className={`font-sans text-xs sm:text-sm whitespace-nowrap shrink-0 px-3 py-1.5 rounded-sm transition-colors cursor-pointer ${
                       isActive
-                        ? 'text-ink-primary font-semibold bg-surface-elevated border border-border-strong'
-                        : 'text-ink-muted hover:text-ink-primary hover:bg-surface-elevated/50'
+                        ? 'text-ink font-medium bg-paper-2 border border-rule-strong'
+                        : 'text-muted hover:text-ink border border-transparent'
                     }`}
                   >
-                    <span>{p.title}</span>
+                    {study.title}
                   </button>
                 );
               })}
             </div>
           </div>
 
-          {/* Middle Content Area with ARIA Tabpanel */}
           <div
             role="tabpanel"
             id={`pillar-panel-${activeIndex}`}
             aria-labelledby={`pillar-tab-${activeIndex}`}
             tabIndex={0}
-            className="py-4 sm:py-6 my-auto min-h-[170px] sm:min-h-[190px] flex flex-col justify-center focus:outline-none"
+            className="py-6 my-auto min-h-[200px] flex flex-col justify-center focus:outline-none"
           >
+            <div className="flex items-center gap-4 text-xs text-muted mb-3">
+              <span className="text-ink-2 tabular-nums inline-flex items-baseline gap-1.5 font-sans">
+                <Counter
+                  value={minElo}
+                  format={{ useGrouping: false }}
+                  duration={0.65}
+                  intro={false}
+                  fontSize="inherit"
+                  fontWeight={500}
+                  className="font-mono"
+                />
+                <span>to</span>
+                <Counter
+                  value={maxElo}
+                  format={{ useGrouping: false }}
+                  duration={0.75}
+                  intro={false}
+                  fontSize="inherit"
+                  fontWeight={500}
+                  suffix={hasPlus ? '+ Elo' : ' Elo'}
+                  className="font-mono"
+                />
+              </span>
+              <span className="font-sans">{current.category}</span>
+            </div>
+
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeIndex}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                 className="w-full"
               >
-                {/* Rating Badge */}
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="font-mono text-xs px-2.5 py-0.5 rounded-md bg-surface-deep border border-border-subtle text-accent-amber font-medium tabular-nums">
-                    {current.ratingTier}
-                  </span>
-                  <span className="text-xs font-sans text-ink-muted">
-                    {current.category}
-                  </span>
-                </div>
-
-                {/* Pillar Headline */}
-                <h3 className="font-serif text-xl sm:text-2xl lg:text-3xl text-ink-primary font-semibold tracking-[-0.025em] leading-snug">
+                <h3 className="font-serif text-2xl sm:text-3xl text-ink font-medium tracking-[-0.02em] leading-snug">
                   {current.title}
                 </h3>
 
-                {/* Pillar Description */}
-                <p className="mt-3 text-sm text-ink-muted leading-relaxed font-sans">
+                <p className="mt-3 text-sm sm:text-base text-muted leading-relaxed font-sans">
                   {current.description}
                 </p>
 
-                {/* Core Disciplines List in Resend Monospace Pills */}
-                <div className="mt-4 flex flex-wrap items-center gap-2">
+                <ul className="mt-6 pt-4 border-t border-rule flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-sans text-ink-2">
                   {current.disciplines.map((discipline) => (
-                    <span
-                      key={discipline}
-                      className="inline-flex items-center px-2.5 py-1 rounded-md bg-surface-deep text-ink-primary text-xs font-mono border border-border-subtle"
-                    >
-                      {discipline}
-                    </span>
+                    <li key={discipline}>{discipline}</li>
                   ))}
-                </div>
+                </ul>
               </motion.div>
             </AnimatePresence>
           </div>
 
-          {/* Bottom Controls Row */}
-          <div className="pt-4 border-t border-border-subtle flex flex-wrap items-center justify-between gap-3">
-            <ArrowFillButton size="md" onClick={onOpenBooking} text="Analyze Your Bottleneck" />
+          <div className="pt-4 border-t border-rule flex flex-wrap items-center justify-between gap-4">
+            <ArrowFillButton
+              size="md"
+              variant="primary"
+              onClick={onOpenBooking}
+              text="Analyze your bottleneck"
+            />
 
-            {/* Step Counter & Nav Buttons */}
             <div className="flex items-center gap-3">
-              <span className="font-sans text-xs text-ink-muted select-none">
-                Study <strong className="text-ink-primary font-semibold tabular-nums">{activeIndex + 1}</strong> of 4
+              <span className="font-sans text-xs text-muted select-none tabular-nums">
+                Study <strong className="text-ink font-medium">{activeIndex + 1}</strong> of{' '}
+                {CURRICULUM_STUDIES.length}
               </span>
               <div className="flex items-center gap-1">
                 <button
                   type="button"
                   aria-label="Previous study"
                   onClick={prevTab}
-                  className="w-8 h-8 rounded-md border border-border-subtle hover:border-border-strong bg-surface-deep text-ink-primary flex items-center justify-center transition-[border-color,background-color] duration-150 cursor-pointer focus-visible:outline-2 focus-visible:outline-ink-primary"
+                  className="w-8 h-8 rounded-sm border border-rule hover:border-rule-strong bg-paper-2 text-ink flex items-center justify-center transition-colors cursor-pointer"
                 >
-                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-3.5 h-3.5" aria-hidden="true">
-                    <path d="M10 12L6 8L10 4" />
-                  </svg>
+                  <ChevronLeft className="w-4 h-4" aria-hidden="true" />
                 </button>
                 <button
                   type="button"
                   aria-label="Next study"
                   onClick={nextTab}
-                  className="w-8 h-8 rounded-md border border-border-subtle hover:border-border-strong bg-surface-deep text-ink-primary flex items-center justify-center transition-[border-color,background-color] duration-150 cursor-pointer focus-visible:outline-2 focus-visible:outline-ink-primary"
+                  className="w-8 h-8 rounded-sm border border-rule hover:border-rule-strong bg-paper-2 text-ink flex items-center justify-center transition-colors cursor-pointer"
                 >
-                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-3.5 h-3.5" aria-hidden="true">
-                    <path d="M6 4L10 8L6 12" />
-                  </svg>
+                  <ChevronRight className="w-4 h-4" aria-hidden="true" />
                 </button>
               </div>
             </div>
           </div>
-
         </div>
 
-        {/* Right Showcase Panel (Grandmaster Dossier Window + 3D Rook Perch Target) */}
+        {/* Right Showcase Panel (Single Kiln Well + 3D Rook Perch) */}
         <div
           data-rook-perch="true"
-          className="lg:col-span-7 relative min-h-[380px] sm:min-h-[440px] rounded-xl overflow-hidden flex flex-col border border-border-subtle bg-surface-card"
+          className="lg:col-span-7 relative min-h-[430px] sm:min-h-[470px] kiln-well overflow-hidden flex flex-col"
         >
-          {/* Subtle 3D Rook Contact Shadow on obsidian card */}
-          <div
-            className="absolute top-0 left-1/2 -translate-x-1/2 w-44 h-6 pointer-events-none rounded-[100%] blur-[4px] -translate-y-1/2 z-20"
-            style={{
-              background:
-                'radial-gradient(ellipse at center, rgba(255, 128, 31, 0.25) 0%, transparent 75%)',
-            }}
-            aria-hidden="true"
-          />
-
           <AnimatePresence mode="wait">
             <motion.div
               key={activeIndex}
-              initial={{ opacity: 0, scale: 0.99 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.99 }}
-              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
               className="w-full h-full flex-1 flex flex-col"
             >
               <ChessboardPreview pillarId={current.pillar} />
             </motion.div>
           </AnimatePresence>
         </div>
-
       </div>
     </div>
   );

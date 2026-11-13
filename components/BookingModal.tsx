@@ -2,8 +2,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { X, Check } from 'lucide-react';
 import { playChessPieceThud } from './SoundToggle';
 import { SlideToConfirm } from './kokonutui/SlideToConfirm';
+import ArrowFillButton from './ArrowFillButton';
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -19,13 +21,15 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     message: '',
   });
 
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>(
+    'idle'
+  );
   const [errorMessage, setErrorMessage] = useState('');
 
   const modalRef = useRef<HTMLDivElement>(null);
   const firstInputRef = useRef<HTMLInputElement>(null);
+  const emailInputRef = useRef<HTMLInputElement>(null);
 
-  // Focus trap and Esc key support
   useEffect(() => {
     if (!isOpen) {
       setStatus('idle');
@@ -44,9 +48,10 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
       }
 
       if (e.key === 'Tab' && modalRef.current) {
-        const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
+        const focusableElements =
+          modalRef.current.querySelectorAll<HTMLElement>(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          );
         if (!focusableElements.length) return;
 
         const firstEl = focusableElements[0];
@@ -71,6 +76,22 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
   const handleSubmit = async () => {
     if (status === 'submitting') return;
+
+    const trimmedName = formData.name.trim();
+    const trimmedEmail = formData.email.trim();
+    if (!trimmedName) {
+      setStatus('error');
+      setErrorMessage('Please enter your full name.');
+      firstInputRef.current?.focus();
+      return;
+    }
+    if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setStatus('error');
+      setErrorMessage('Please enter a valid email address.');
+      emailInputRef.current?.focus();
+      return;
+    }
+
     setStatus('submitting');
     setErrorMessage('');
     playChessPieceThud(0.8);
@@ -79,19 +100,27 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
       const res = await fetch('/api/book', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          name: trimmedName,
+          email: trimmedEmail,
+        }),
       });
 
       const data = await res.json();
       if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Failed to submit consultation request.');
+        throw new Error(data.error || 'Unable to submit the consultation request.');
       }
 
       setStatus('success');
       playChessPieceThud(1.3);
     } catch (err: unknown) {
       setStatus('error');
-      setErrorMessage(err instanceof Error ? err.message : 'Something went wrong.');
+      setErrorMessage(
+        err instanceof Error
+          ? err.message
+          : 'The submission failed. Check your fields and try again.'
+      );
     }
   };
 
@@ -99,7 +128,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     <AnimatePresence>
       {isOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-paper/95"
           onClick={() => {
             playChessPieceThud(0.7);
             onClose();
@@ -110,157 +139,203 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
         >
           <motion.div
             ref={modalRef}
-            initial={{ opacity: 0, scale: 0.94, y: 12 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 8 }}
-            transition={{ type: 'spring', stiffness: 360, damping: 28 }}
-            className="relative w-full max-w-lg p-7 sm:p-8 bg-surface-card text-ink-primary rounded-xl shadow-2xl border border-border-strong overflow-hidden"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            className="relative w-full max-w-lg p-7 sm:p-8 bg-paper-2 text-ink rounded-well border border-rule-strong overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Close Button */}
             <button
+              type="button"
               onClick={() => {
                 playChessPieceThud(0.7);
                 onClose();
               }}
-              className="absolute top-6 right-6 w-8 h-8 rounded-md flex items-center justify-center text-ink-muted hover:text-ink-primary active:scale-90 hover:bg-surface-elevated transition-colors focus-visible:outline-2 focus-visible:outline-ink-primary cursor-pointer border border-transparent hover:border-border-subtle"
-              aria-label="Close modal"
+              className="absolute top-6 right-6 w-9 h-9 rounded-full flex items-center justify-center text-muted hover:text-ink hover:bg-paper-3 transition-colors cursor-pointer border border-rule focus-visible:outline-2 focus-visible:outline-focus"
+              aria-label="Close consultation dialog"
             >
-              ✕
+              <X className="w-4 h-4" aria-hidden="true" />
             </button>
 
             {status === 'success' ? (
               <div className="text-center py-6">
-                <div className="w-14 h-14 mx-auto mb-4 bg-surface-deep text-accent-green rounded-full flex items-center justify-center text-xl font-semibold border border-accent-green/30">
-                  ✓
+                <div className="w-12 h-12 mx-auto mb-4 bg-paper text-accent-green rounded-full flex items-center justify-center border border-rule">
+                  <Check className="w-5 h-5" aria-hidden="true" />
                 </div>
-                <h3 id="booking-modal-title" className="font-serif text-2xl sm:text-3xl font-semibold tracking-[-0.025em] text-ink-primary">
-                  Session Requested
-                </h3>
-                <p className="mt-3 text-ink-muted text-sm leading-relaxed max-w-sm mx-auto font-sans">
-                  Thank you, <b>{formData.name || 'Candidate'}</b>. Your consultation profile has been registered. Coach Aditya will review your ratings and reach out via email.
+                <h2
+                  id="booking-modal-title"
+                  className="font-serif text-3xl text-ink"
+                >
+                  Session requested
+                </h2>
+                <p className="mt-3 text-muted text-base leading-relaxed max-w-sm mx-auto font-sans">
+                  Thank you, <strong className="text-ink font-medium">{formData.name || 'Candidate'}</strong>. Your profile is registered and Coach Aditya will reply by email.
                 </p>
-                <div className="mt-8 flex flex-col gap-3">
-                  <button
+                <div className="mt-8">
+                  <ArrowFillButton
+                    size="md"
+                    variant="primary"
+                    fullWidth
                     onClick={onClose}
-                    className="w-full py-3 px-6 rounded-md bg-[#FCFDFF] text-[#000000] hover:bg-slate-200 active:scale-[0.99] transition-all font-sans text-sm font-semibold tracking-normal flex items-center justify-center cursor-pointer shadow-sm focus-visible:outline-2 focus-visible:outline-ink-primary"
-                  >
-                    Close Window
-                  </button>
+                    text="Close window"
+                  />
                 </div>
               </div>
             ) : (
               <>
-                <div className="mb-6">
-                  <span className="font-mono text-xs text-accent-amber block mb-1">
-                    consultation.register
-                  </span>
-                  <h3 id="booking-modal-title" className="font-serif text-2xl sm:text-3xl font-semibold tracking-[-0.025em] text-ink-primary">
-                    Book a Diagnostic Consultation
-                  </h3>
-                  <p className="text-xs sm:text-sm text-ink-muted mt-1.5 font-sans leading-relaxed">
-                    Provide your chess credentials so Coach Aditya can prepare an individualized assessment.
+                <div className="mb-6 pr-10">
+                  <h2
+                    id="booking-modal-title"
+                    className="font-serif text-3xl text-ink"
+                  >
+                    Book a diagnostic session
+                  </h2>
+                  <p className="text-sm text-muted mt-2 font-sans leading-relaxed">
+                    Share your current rating and primary focus so Coach Aditya can review your recent tournament play.
                   </p>
                 </div>
 
-                {status === 'error' && (
-                  <div className="mb-4 p-3 rounded-md bg-surface-deep border border-accent-red/30 text-accent-red text-xs font-mono" role="alert">
-                    {errorMessage}
-                  </div>
-                )}
+                <div className="min-h-[1lh] mb-3" aria-live="polite">
+                  {status === 'error' && (
+                    <div
+                      className="p-3 rounded-md bg-paper border border-accent-red text-ink text-sm font-sans"
+                      role="alert"
+                    >
+                      {errorMessage}
+                    </div>
+                  )}
+                </div>
 
                 <div className="space-y-4 font-sans">
                   <div>
-                    <label htmlFor="booking-name" className="block text-xs font-sans font-medium text-ink-primary mb-1.5">
-                      Full Name
+                    <label
+                      htmlFor="booking-name"
+                      className="block text-sm font-sans font-medium text-ink-2 mb-1.5"
+                    >
+                      Full name
                     </label>
                     <input
                       id="booking-name"
                       ref={firstInputRef}
                       type="text"
+                      name="name"
+                      autoComplete="name"
                       required
-                      placeholder="Full Name"
+                      placeholder="Your name"
                       value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-md bg-surface-deep border border-border-subtle text-base sm:text-sm text-ink-primary focus:outline-none focus:border-ink-primary focus:ring-1 focus:ring-ink-primary transition-[border-color] duration-150"
+                      onChange={(e) => {
+                        if (status === 'error') {
+                          setStatus('idle');
+                          setErrorMessage('');
+                        }
+                        setFormData({ ...formData, name: e.target.value });
+                      }}
+                      className="w-full min-h-[48px] px-4 rounded-well bg-paper border border-rule text-base text-ink focus:outline-2 focus:outline-focus focus:-outline-offset-2"
                     />
                   </div>
 
                   <div>
-                    <label htmlFor="booking-email" className="block text-xs font-sans font-medium text-ink-primary mb-1.5">
-                      Email Address
+                    <label
+                      htmlFor="booking-email"
+                      className="block text-sm font-sans font-medium text-ink-2 mb-1.5"
+                    >
+                      Email address
                     </label>
                     <input
                       id="booking-email"
+                      ref={emailInputRef}
                       type="email"
+                      name="email"
+                      autoComplete="email"
                       required
                       placeholder="name@example.com"
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-md bg-surface-deep border border-border-subtle text-base sm:text-sm text-ink-primary focus:outline-none focus:border-ink-primary focus:ring-1 focus:ring-ink-primary transition-[border-color] duration-150"
+                      onChange={(e) => {
+                        if (status === 'error') {
+                          setStatus('idle');
+                          setErrorMessage('');
+                        }
+                        setFormData({ ...formData, email: e.target.value });
+                      }}
+                      className="w-full min-h-[48px] px-4 rounded-well bg-paper border border-rule text-base text-ink focus:outline-2 focus:outline-focus focus:-outline-offset-2"
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label htmlFor="booking-rating" className="block text-xs font-sans font-medium text-ink-primary mb-1.5">
-                        Rating Tier
+                      <label
+                        htmlFor="booking-rating"
+                        className="block text-sm font-sans font-medium text-ink-2 mb-1.5"
+                      >
+                        Rating tier
                       </label>
                       <select
                         id="booking-rating"
                         value={formData.rating}
-                        onChange={(e) => setFormData({ ...formData, rating: e.target.value })}
-                        className="w-full px-3 py-2.5 rounded-md bg-surface-deep border border-border-subtle text-base sm:text-sm text-ink-primary focus:outline-none focus:border-ink-primary focus:ring-1 focus:ring-ink-primary transition-[border-color] duration-150"
+                        onChange={(e) =>
+                          setFormData({ ...formData, rating: e.target.value })
+                        }
+                        className="w-full min-h-[48px] px-3.5 rounded-well bg-paper border border-rule text-base text-ink focus:outline-2 focus:outline-focus focus:-outline-offset-2"
                       >
                         <option value="1000-1400">Club (1000 to 1400)</option>
                         <option value="1400-1800">Intermediate (1400 to 1800)</option>
                         <option value="1800-2100">Tournament (1800 to 2100)</option>
-                        <option value="2100-2400+">Candidate Master+ (2100 to 2400+)</option>
-                        <option value="Under 1000">Foundational (&lt;1000)</option>
+                        <option value="2100-2400+">Master tier (2100 to 2400+)</option>
+                        <option value="Under 1000">Foundational (under 1000)</option>
                       </select>
                     </div>
 
                     <div>
-                      <label htmlFor="booking-goal" className="block text-xs font-sans font-medium text-ink-primary mb-1.5">
-                        Primary Goal
+                      <label
+                        htmlFor="booking-goal"
+                        className="block text-sm font-sans font-medium text-ink-2 mb-1.5"
+                      >
+                        Primary focus
                       </label>
                       <select
                         id="booking-goal"
                         value={formData.goal}
-                        onChange={(e) => setFormData({ ...formData, goal: e.target.value })}
-                        className="w-full px-3 py-2.5 rounded-md bg-surface-deep border border-border-subtle text-base sm:text-sm text-ink-primary focus:outline-none focus:border-ink-primary focus:ring-1 focus:ring-ink-primary transition-[border-color] duration-150"
+                        onChange={(e) =>
+                          setFormData({ ...formData, goal: e.target.value })
+                        }
+                        className="w-full min-h-[48px] px-3.5 rounded-well bg-paper border border-rule text-base text-ink focus:outline-2 focus:outline-focus focus:-outline-offset-2"
                       >
-                        <option value="Positional understanding">Positional Ideas</option>
-                        <option value="Opening Repertoire">Opening Systems</option>
-                        <option value="Calculation & Tactics">Tactical Intuition</option>
-                        <option value="Endgame Technique">Endgame Precision</option>
-                        <option value="Tournament Preparation">Tournament Prep</option>
+                        <option value="Positional understanding">Positional play</option>
+                        <option value="Opening Repertoire">Opening systems</option>
+                        <option value="Calculation & Tactics">Calculation precision</option>
+                        <option value="Endgame Technique">Endgame technique</option>
+                        <option value="Tournament Preparation">Tournament preparation</option>
                       </select>
                     </div>
                   </div>
 
                   <div>
-                    <label htmlFor="booking-message" className="block text-xs font-sans font-medium text-ink-primary mb-1.5">
-                      Current Obstacles (Optional)
+                    <label
+                      htmlFor="booking-message"
+                      className="block text-sm font-sans font-medium text-ink-2 mb-1.5"
+                    >
+                      Recent tournament notes (optional)
                     </label>
                     <textarea
                       id="booking-message"
                       rows={2}
-                      placeholder="Positions or phases of the game that trouble you most..."
+                      placeholder="Positions or phases where your games break down…"
                       value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      className="w-full px-3.5 py-2 rounded-md bg-surface-deep border border-border-subtle text-base sm:text-sm text-ink-primary focus:outline-none focus:border-ink-primary focus:ring-1 focus:ring-ink-primary transition-[border-color] duration-150 resize-none"
+                      onChange={(e) =>
+                        setFormData({ ...formData, message: e.target.value })
+                      }
+                      className="w-full px-4 py-3 rounded-well bg-paper border border-rule text-base text-ink focus:outline-2 focus:outline-focus focus:-outline-offset-2 resize-none"
                     />
                   </div>
 
-                  {/* Slide to Confirm */}
-                  <div className="mt-5 pt-4 border-t border-border-subtle">
+                  <div className="pt-2">
                     <SlideToConfirm
                       onConfirm={handleSubmit}
                       isLoading={status === 'submitting'}
                       isConfirmed={false}
                       text="Slide to request evaluation"
-                      confirmedText="Evaluation Booked"
+                      confirmedText="Evaluation requested"
                     />
                   </div>
                 </div>
