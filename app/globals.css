@@ -1,0 +1,321 @@
+/* Hallmark · v2.0.0 · system: resend-editorial · shape: monograph · job: master mentorship */
+/* Hallmark · critique: obsidian canvas, zero purple gradients, Domaine/Cormorant display authority, tactile board window */
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  overflow-x: clip;
+  background-color: var(--canvas);
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  color: var(--ink-primary);
+  background: var(--canvas);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: rgba(252, 253, 255, 0.22);
+  color: #FCFDFF;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ACCESSIBILITY: FOCUS VISIBLE (HALLMARK GATE 26a) */
+:focus-visible {
+  outline: 2px solid var(--ink-primary);
+  outline-offset: 2px;
+}
+
+/* LENIS SMOOTH SCROLL */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* 3D ROOK CANVAS GUARDRAILS */
+#rook {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  width: 100%;
+  height: 100%;
+  pointer-events: none !important;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+#rook.ready {
+  opacity: 1;
+}
+
+/* SECTION BASE */
+section {
+  position: relative;
+  box-sizing: border-box;
+  background: var(--canvas);
+}
+
+/* PROGRESSIVE REVEAL (HALLMARK GATE 62: VISIBLE AT REST IF JS FAILS) */
+.reveal {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.js .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  html.js .in .reveal,
+  html.js .in.reveal {
+    opacity: 1;
+    transform: none;
+  }
+  html.js .in .reveal.d1 { transition-delay: 0.08s; }
+  html.js .in .reveal.d2 { transition-delay: 0.16s; }
+  html.js .in .reveal.d3 { transition-delay: 0.24s; }
+}
+
+/* ACCESSIBILITY: PREFERS-REDUCED-MOTION */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .afb-btn:hover {
+    transform: none !important;
+  }
+
+  .loader svg {
+    animation: none !important;
+  }
+}
+
+/* HERO SECTION - RESEND ATMOSPHERIC RADIAL GLOW */
+.hero {
+  background: var(--canvas);
+  min-height: 94dvh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: clamp(96px, 14vh, 148px) var(--pad) clamp(44px, 8vh, 88px);
+  overflow: clip;
+}
+
+.hero-glow {
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1200px;
+  height: 520px;
+  background: radial-gradient(ellipse 60% 50% at 50% 10%, rgba(255, 128, 31, 0.16), transparent 75%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ARROW FILL BUTTON - HYBRID RESEND SPEC */
+.afb-btn {
+  --btn-duration: 380ms;
+  --btn-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --btn-bg: #FCFDFF;
+  --btn-text: #000000;
+  --btn-fill-bg: #EAEFF5;
+  --btn-fill-text: #000000;
+  --btn-arrow: #000000;
+  --circle-inset-y: calc((100% - var(--icon-circle)) / 2);
+
+  background-color: var(--btn-bg);
+  color: var(--btn-text);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6), 0 4px 14px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.afb-btn:hover {
+  transform: translateY(-1.5px);
+  background-color: var(--btn-fill-bg);
+  box-shadow: 0 0 0 1px rgba(255, 128, 31, 0.4), 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
+.afb-btn:active {
+  transform: translateY(0) scale(0.985);
+}
+
+/* Expanding circle */
+.afb-circle {
+  background-color: #FFFFFF;
+  top: var(--circle-inset-y);
+  bottom: var(--circle-inset-y);
+  right: var(--icon-right);
+  left: calc(100% - var(--icon-right) - var(--icon-circle));
+  transition: inset var(--btn-duration) var(--btn-ease);
+}
+
+.afb-btn:hover .afb-circle,
+.afb-btn:active .afb-circle {
+  inset: 0;
+  border-radius: var(--radius-pill);
+}
+
+/* Masked label */
+.afb-mask {
+  color: var(--btn-fill-text);
+  clip-path: inset(var(--circle-inset-y) var(--icon-right) var(--circle-inset-y) calc(100% - var(--icon-right) - var(--icon-circle)));
+  transition: clip-path var(--btn-duration) var(--btn-ease);
+}
+
+.afb-btn:hover .afb-mask,
+.afb-btn:active .afb-mask {
+  clip-path: inset(0 0 0 0);
+}
+
+/* Circular icon badge */
+.afb-icon {
+  right: var(--icon-right);
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--icon-circle);
+  height: var(--icon-circle);
+  background-color: #000000;
+  color: #FCFDFF;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Dual Arrow SVG Animation */
+.afb-arrow {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  top: 50%;
+  left: 50%;
+  color: currentColor;
+  transition: transform var(--btn-duration) var(--btn-ease);
+}
+
+.afb-arrow--exit {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.afb-btn:hover .afb-arrow--exit,
+.afb-btn:active .afb-arrow--exit {
+  transform: translate(65%, -65%) scale(0);
+}
+
+.afb-arrow--enter {
+  transform: translate(-165%, 65%) scale(0);
+}
+
+.afb-btn:hover .afb-arrow--enter,
+.afb-btn:active .afb-arrow--enter {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .afb-circle,
+  .afb-mask,
+  .afb-arrow {
+    transition: none !important;
+  }
+}
+
+/* RESEND GRANDMASTER DOSSIER / CODE WINDOW */
+.resend-window {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.7);
+}
+
+.resend-window-header {
+  height: 44px;
+  background-color: var(--surface-deep);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  justify-content: space-between;
+}
+
+.resend-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.resend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  opacity: 0.8;
+}
+
+/* LOADER */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--canvas);
+  display: grid;
+  place-items: center;
+  transition: opacity 0.8s ease, visibility 0.8s;
+}
+.loader.done {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.loader svg {
+  width: 44px;
+  height: 44px;
+  transform-origin: 50% 50%;
+  animation: spin 1.6s linear infinite;
+  fill: var(--ink-primary);
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

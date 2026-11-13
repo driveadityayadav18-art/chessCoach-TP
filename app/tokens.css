@@ -1,0 +1,68 @@
+/* Resend Editorial Design System · Aditya Yadav Master Chess Mentorship */
+:root {
+  /* Canvas & Obsidian Surfaces */
+  --canvas: #000000;
+  --canvas-subtle: #06060A;
+  --canvas-card: #0A0A0C;
+  --canvas-elevated: #101012;
+  --canvas-sunken: #040406;
+
+  /* Typography & High-Contrast Ink */
+  --ink-primary: #FCFDFF;
+  --ink-secondary: rgba(252, 253, 255, 0.86);
+  --ink-muted: #A1A4A5;
+  --ink-faint: #888E90;
+  --ink-charcoal: rgba(252, 253, 255, 0.70);
+
+  /* Translucent Hairline Borders (Zero drop shadows) */
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --divider-soft: rgba(255, 255, 255, 0.04);
+
+  /* Primary Action Button (Inverted High-Contrast Resend Pill) */
+  --btn-primary-bg: #FCFDFF;
+  --btn-primary-text: #000000;
+  --btn-primary-hover: #E2E8F0;
+
+  /* Warm Amber / Copper Atmospheric Micro-Voltage */
+  --accent-amber: #FF801F;
+  --accent-amber-hover: #E06D16;
+  --accent-amber-glow: rgba(255, 128, 31, 0.18);
+  --accent-amber-subtle: rgba(255, 128, 31, 0.08);
+  --accent-clay: #FF801F;
+  --accent-clay-hover: #E06D16;
+
+  /* Telemetry & Accents */
+  --accent-green: #11FF99;
+  --accent-green-glow: rgba(17, 255, 153, 0.18);
+  --accent-blue: #3B9EFF;
+  --accent-blue-glow: rgba(59, 158, 255, 0.20);
+  --accent-red: #FF2047;
+
+  /* Dark Masthead & Card Surfaces */
+  --surface-dark: #000000;
+  --surface-dark-card: #0A0A0C;
+  --surface-elevated: #101012;
+  --surface-deep: #06060A;
+  --border-dark: rgba(255, 255, 255, 0.08);
+  --border-dark-strong: rgba(255, 255, 255, 0.16);
+  --ink-dark-primary: #FCFDFF;
+  --ink-dark-secondary: rgba(252, 253, 255, 0.86);
+  --ink-dark-muted: #A1A4A5;
+
+  /* Layout & Geometry */
+  --pad: clamp(20px, 4.2vw, 64px);
+  --container-max: 1280px;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-pill: 9999px;
+
+  /* Legacy aliases mapped to Resend tokens */
+  --ink: var(--ink-primary);
+  --muted: var(--ink-muted);
+  --bg: var(--canvas);
+  --accent: var(--accent-amber);
+}
