@@ -130,7 +130,10 @@ export default function SoundToggle({
 
   if (isFloating) {
     return (
-      <div className="fixed z-30 left-[var(--gutter)] bottom-[max(1rem,env(safe-area-inset-bottom))]">
+      <div
+        id="sound-toggle-wrap"
+        className="fixed z-30 left-[var(--gutter)] bottom-[max(1rem,env(safe-area-inset-bottom))]"
+      >
         <Magnet padding={44} magnetStrength={4} maxOffset={12}>
           {buttonNode}
         </Magnet>

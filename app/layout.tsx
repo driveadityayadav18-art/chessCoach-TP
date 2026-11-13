@@ -83,7 +83,7 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "try{if(sessionStorage.getItem('kiln-preloader-seen')==='1'||window.matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.dataset.preloaderDone='1';}}catch(e){}",
+              "try{document.documentElement.classList.add('js');if(sessionStorage.getItem('kiln-preloader-seen')==='1'||window.matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.dataset.preloaderDone='1';document.documentElement.dataset.heroReveal='1';}else{document.documentElement.dataset.preloaderActive='1';}}catch(e){document.documentElement.dataset.heroReveal='1';}",
           }}
         />
         <script
