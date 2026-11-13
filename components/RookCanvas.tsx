@@ -113,11 +113,9 @@ function targetAt(p: number, isMobile: boolean) {
 
 export default function RookCanvas() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const loaderRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const loader = loaderRef.current;
     if (!canvas) return;
 
     const prefersReducedMotion =
@@ -211,10 +209,11 @@ export default function RookCanvas() {
     function markLoaded(modelReady = false) {
       if (!pageLoaded) {
         pageLoaded = true;
-        if (loader) {
-          loader.classList.add('done');
-        }
         document.body.classList.add('loaded');
+        (window as unknown as { __rookReady?: boolean }).__rookReady = true;
+        window.dispatchEvent(
+          new CustomEvent('rook-scene-ready', { detail: { modelReady } })
+        );
       }
       if (modelReady && canvas) {
         canvas.classList.add('ready');
@@ -611,14 +610,6 @@ export default function RookCanvas() {
   }, []);
 
   return (
-    <>
-      <div className="loader" id="loader" ref={loaderRef}>
-        <svg viewBox="0 0 40 40" aria-hidden="true">
-          <path d="M8 36h24v-4H8z M12 32l1.5-14h13L28 32z M9 18V8h4v4h4V8h6v4h4V8h4v10z" />
-        </svg>
-      </div>
-
-      <canvas id="rook" ref={canvasRef} aria-hidden="true" style={{ zIndex: 35, pointerEvents: 'none' }} />
-    </>
+    <canvas id="rook" ref={canvasRef} aria-hidden="true" style={{ zIndex: 35, pointerEvents: 'none' }} />
   );
 }

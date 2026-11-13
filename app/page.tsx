@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import DynamicIslandNav from '@/components/DynamicIslandNav';
 import BookingModal from '@/components/BookingModal';
+import SmartPreloader from '@/components/SmartPreloader';
 import Hero from '@/components/sections/Hero';
 import MatchReelSection from '@/components/sections/MatchReelSection';
 import Method from '@/components/sections/Method';
@@ -35,6 +36,7 @@ export default function Home() {
 
   return (
     <>
+      <SmartPreloader />
       <Noise fixed opacity={0.04} blendMode="overlay" fps={16} zIndex={50} />
       <SoundToggle isFloating />
       <DynamicIslandNav onOpenBooking={() => setIsBookingOpen(true)} />

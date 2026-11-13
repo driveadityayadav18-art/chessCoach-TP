@@ -9,6 +9,7 @@ import {
   type CSSProperties,
   type ReactNode,
 } from 'react';
+import ShinyText from './ShinyText';
 
 const useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
@@ -102,7 +103,7 @@ const SCROLLBAR_CLASS =
   '[scrollbar-width:thin] [scrollbar-color:var(--al-thumb)_transparent] [&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-[3px] [&::-webkit-scrollbar-thumb]:bg-[color:var(--al-thumb)]';
 const BARE_CLASS = '[scrollbar-width:none] [&::-webkit-scrollbar]:hidden';
 const ITEM_CLASS =
-  'relative z-[1] box-border flex min-w-0 cursor-pointer items-center gap-3 rounded-[var(--al-radius)] py-4 px-3 text-[color:var(--al-ink)] select-none border-b border-rule last:border-b-0 [[data-animated]_&:not([data-state])]:opacity-0 transition-colors';
+  'group relative z-[1] box-border flex min-w-0 cursor-pointer items-center gap-3 rounded-[var(--al-radius)] py-4 px-3 text-[color:var(--al-ink)] select-none border-b border-rule last:border-b-0 [[data-animated]_&:not([data-state])]:opacity-0 transition-colors';
 const INDICATOR_CLASS =
   'pointer-events-none absolute top-0 right-0 left-0 z-0 h-0 opacity-0 transition-opacity duration-200 ease-[ease]';
 const RING_CLASS =
@@ -535,9 +536,20 @@ const AnimatedList = ({
                 ) : (
                   <div className="w-full min-w-0">
                     <div className="flex items-baseline justify-between gap-4">
-                      <span className="font-sans text-base font-medium text-ink">{entry.title}</span>
+                      <span className="font-sans text-base font-medium text-ink transition-transform duration-200 group-hover:translate-x-0.5">
+                        {entry.title}
+                      </span>
                       {entry.meta && (
-                        <span className="font-mono text-xs text-ink-2 tabular-nums shrink-0">{entry.meta}</span>
+                        typeof entry.meta === 'string' ? (
+                          <ShinyText
+                            text={entry.meta}
+                            className="font-mono text-xs tabular-nums shrink-0"
+                          />
+                        ) : (
+                          <span className="font-mono text-xs text-ink-2 tabular-nums shrink-0">
+                            {entry.meta}
+                          </span>
+                        )
                       )}
                     </div>
                     {entry.description && (

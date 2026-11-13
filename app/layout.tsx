@@ -12,14 +12,12 @@ const cormorantFallback = Cormorant_Garamond({
 const geistSans = Geist({
   variable: '--font-sans',
   subsets: ['latin'],
-  weight: ['400', '500'],
   display: 'swap',
 });
 
 const geistMono = Geist_Mono({
   variable: '--font-mono',
   subsets: ['latin'],
-  weight: ['400', '500'],
   display: 'swap',
 });
 
@@ -75,11 +73,18 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${cormorantFallback.variable} ${geistSans.variable} ${geistMono.variable}`}
+      suppressHydrationWarning
     >
       <head>
         <link
           href="https://api.fontshare.com/v2/css?f[]=boska@500&display=swap"
           rel="stylesheet"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{if(sessionStorage.getItem('kiln-preloader-seen')==='1'||window.matchMedia('(prefers-reduced-motion: reduce)').matches){document.documentElement.dataset.preloaderDone='1';}}catch(e){}",
+          }}
         />
         <script
           type="application/ld+json"

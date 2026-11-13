@@ -1,0 +1,68 @@
+/* Hallmark · v2.0.0 · theme: kiln · genre: atmospheric */
+.kiln-shiny-text {
+  --shiny-duration: 2.8s;
+  --shiny-base: var(--color-muted);
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  color: var(--shiny-base);
+  transition: color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.kiln-shiny-text--ink {
+  --shiny-base: var(--color-ink-2);
+}
+
+.kiln-shiny-text::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 55%;
+  transform: translateX(-140%) skewX(-18deg);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in oklab, var(--color-ink) 32%, transparent) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.25s ease;
+}
+
+.kiln-shiny-text--hover:hover,
+.group:hover .kiln-shiny-text--hover,
+.kiln-shiny-parent:hover .kiln-shiny-text--hover {
+  color: var(--color-ink);
+}
+
+.kiln-shiny-text--hover:hover::after,
+.group:hover .kiln-shiny-text--hover::after,
+.kiln-shiny-parent:hover .kiln-shiny-text--hover::after {
+  opacity: 1;
+  transform: translateX(240%) skewX(-18deg);
+}
+
+.kiln-shiny-text--always::after {
+  opacity: 1;
+  animation: kiln-shine-sweep var(--shiny-duration) linear infinite;
+}
+
+@keyframes kiln-shine-sweep {
+  0% {
+    transform: translateX(-140%) skewX(-18deg);
+  }
+  100% {
+    transform: translateX(240%) skewX(-18deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kiln-shiny-text::after {
+    display: none;
+    animation: none !important;
+  }
+}

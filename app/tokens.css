@@ -30,6 +30,7 @@
   --piece-white: oklch(94% 0.02 78);
   --piece-black: oklch(20% 0.016 40);
   --piece-stroke: oklch(78% 0.02 70);
+  --piece-white-stroke: oklch(14% 0.015 40);
 
   /* Kiln Thermal Evaluation Ramp (Charts & Evaluation Curves Only) */
   --heat-0: oklch(12% 0.012 40);

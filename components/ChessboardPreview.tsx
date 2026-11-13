@@ -18,6 +18,7 @@ import {
   type BoardGrid,
 } from '@/lib/chessStudies';
 import { ChessPieceGlyph } from '@/lib/chessPieces';
+import ShinyText from './reactbits/ShinyText';
 
 const FILES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const RANKS = ['8', '7', '6', '5', '4', '3', '2', '1'];
@@ -148,8 +149,8 @@ export default function ChessboardPreview({ pillarId }: ChessboardPreviewProps) 
   return (
     <div className="w-full h-full flex flex-col justify-between bg-paper-2 text-ink relative select-none">
       {/* Workbench Header */}
-      <div className="px-4 sm:px-6 py-3.5 bg-paper border-b border-rule flex flex-wrap items-center justify-between gap-3">
-        <span className="font-mono text-xs text-muted">{data.eco}</span>
+      <div className="group px-4 sm:px-6 py-3.5 bg-paper border-b border-rule flex flex-wrap items-center justify-between gap-3">
+        <ShinyText text={data.eco} className="font-mono text-xs" />
 
         <div className="flex items-center gap-1 p-0.5 rounded-sm bg-paper-2 border border-rule">
           <button
@@ -207,7 +208,7 @@ export default function ChessboardPreview({ pillarId }: ChessboardPreviewProps) 
                   type="button"
                   onClick={() => handleSquareClick(rIdx, cIdx)}
                   aria-label={`Square ${squareName}${piece ? ' occupied' : ''}`}
-                  className={`relative flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-focus ${
+                  className={`relative w-full h-full min-w-0 min-h-0 flex items-center justify-center transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-focus ${
                     isSelected
                       ? 'bg-[var(--board-selected)] ring-1 ring-inset ring-accent'
                       : isHighlighted
@@ -223,6 +224,7 @@ export default function ChessboardPreview({ pillarId }: ChessboardPreviewProps) 
                       initial={{ opacity: 0.85 }}
                       animate={{ opacity: 1 }}
                       transition={{ duration: 0.16 }}
+                      className="flex items-center justify-center w-full h-full pointer-events-none"
                     >
                       <ChessPieceGlyph code={piece} />
                     </motion.div>

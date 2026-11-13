@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import ArrowFillButton from '../ArrowFillButton';
 import BlurText from '../reactbits/BlurText';
 import AnimatedList, { type AnimatedListEntry } from '../reactbits/AnimatedList';
+import VariableProximity from '../reactbits/VariableProximity';
+import ShinyText from '../reactbits/ShinyText';
 import { playChessPieceThud } from '../SoundToggle';
 
 interface AccessProps {
@@ -88,6 +90,7 @@ const PEDIGREE_ENTRIES: AnimatedListEntry[] = [
 
 export default function Access({ onOpenBooking }: AccessProps) {
   const [selectedConcept, setSelectedConcept] = useState<TacticalConcept>(CONCEPTS[0]);
+  const regimenRef = useRef<HTMLOListElement>(null);
 
   return (
     <section
@@ -161,14 +164,15 @@ export default function Access({ onOpenBooking }: AccessProps) {
             transition={{ duration: 0.55, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-7 space-y-8"
           >
-            <div className="p-6 sm:p-8 rounded-well bg-paper border border-rule">
+            <div className="group p-6 sm:p-8 rounded-well bg-paper border border-rule">
               <div className="flex flex-wrap items-baseline justify-between gap-2 pb-4 border-b border-rule mb-5">
                 <h3 className="font-serif text-2xl sm:text-3xl font-medium tracking-[-0.02em] text-ink">
                   Structural diagnosis
                 </h3>
-                <span className="text-xs font-sans text-muted">
-                  {selectedConcept.discipline}
-                </span>
+                <ShinyText
+                  text={selectedConcept.discipline}
+                  className="font-mono text-xs"
+                />
               </div>
 
               <div className="flex flex-wrap gap-2 mb-6">
@@ -217,31 +221,52 @@ export default function Access({ onOpenBooking }: AccessProps) {
                 Individual mentorship regimen
               </h3>
 
-              <ol className="grid grid-cols-1 sm:grid-cols-3 gap-6 pb-8 border-b border-rule list-none">
-                <li>
+              <ol ref={regimenRef} className="grid grid-cols-1 sm:grid-cols-3 gap-6 pb-8 border-b border-rule list-none">
+                <li className="group rounded-sm p-3 -m-3 border border-transparent hover:border-rule hover:bg-paper transition-colors">
                   <h4 className="font-serif text-lg font-medium text-ink mb-1.5">
-                    1. Repertoire overhaul
+                    <ShinyText text="1. Repertoire overhaul" tone="ink" className="font-serif" />
                   </h4>
                   <p className="font-sans text-xs sm:text-sm text-muted leading-relaxed">
-                    Custom PGN trees tailored to your cognitive style and sharpest pawn structures.
+                    <VariableProximity
+                      label="Custom PGN trees tailored to your cognitive style and sharpest pawn structures."
+                      fromFontVariationSettings="'wght' 400"
+                      toFontVariationSettings="'wght' 680"
+                      containerRef={regimenRef}
+                      radius={80}
+                      falloff="gaussian"
+                    />
                   </p>
                 </li>
 
-                <li>
+                <li className="group rounded-sm p-3 -m-3 border border-transparent hover:border-rule hover:bg-paper transition-colors">
                   <h4 className="font-serif text-lg font-medium text-ink mb-1.5">
-                    2. Psychological debriefs
+                    <ShinyText text="2. Psychological debriefs" tone="ink" className="font-serif" />
                   </h4>
                   <p className="font-sans text-xs sm:text-sm text-muted leading-relaxed">
-                    Post-round analysis to eliminate tilt, calculation fatigue, and time trouble.
+                    <VariableProximity
+                      label="Post-round analysis to eliminate tilt, calculation fatigue, and time trouble."
+                      fromFontVariationSettings="'wght' 400"
+                      toFontVariationSettings="'wght' 680"
+                      containerRef={regimenRef}
+                      radius={80}
+                      falloff="gaussian"
+                    />
                   </p>
                 </li>
 
-                <li>
+                <li className="group rounded-sm p-3 -m-3 border border-transparent hover:border-rule hover:bg-paper transition-colors">
                   <h4 className="font-serif text-lg font-medium text-ink mb-1.5">
-                    3. Endgame conversion
+                    <ShinyText text="3. Endgame conversion" tone="ink" className="font-serif" />
                   </h4>
                   <p className="font-sans text-xs sm:text-sm text-muted leading-relaxed">
-                    Converting microscopic advantages into tournament points using rook protocols.
+                    <VariableProximity
+                      label="Converting microscopic advantages into tournament points using rook protocols."
+                      fromFontVariationSettings="'wght' 400"
+                      toFontVariationSettings="'wght' 680"
+                      containerRef={regimenRef}
+                      radius={80}
+                      falloff="gaussian"
+                    />
                   </p>
                 </li>
               </ol>

@@ -48,19 +48,22 @@ export function ChessPieceGlyph({ code }: { code: string }) {
 
   return (
     <svg
+      width={28}
+      height={28}
       viewBox="0 0 45 45"
       aria-hidden="true"
-      className={`w-[24px] h-[24px] sm:w-[28px] sm:h-[28px] select-none pointer-events-none ${
-        isWhite ? 'text-[var(--piece-white)]' : 'text-[var(--piece-black)]'
-      }`}
+      className="w-[24px] h-[24px] sm:w-[28px] sm:h-[28px] shrink-0 select-none pointer-events-none block"
+      style={{
+        color: isWhite ? 'var(--piece-white)' : 'var(--piece-black)',
+      }}
     >
       {paths.map((d, i) => (
         <path
           key={i}
           d={d}
           fill="currentColor"
-          stroke="var(--piece-stroke)"
-          strokeWidth={isWhite ? 1.35 : 1.2}
+          stroke={isWhite ? 'var(--piece-white-stroke)' : 'var(--piece-stroke)'}
+          strokeWidth={isWhite ? 1.45 : 1.35}
           strokeLinejoin="round"
         />
       ))}

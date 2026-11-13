@@ -1,9 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useRef } from 'react';
 import Image from 'next/image';
 import ArrowFillButton from '../ArrowFillButton';
 import Counter from '../reactbits/Counter';
+import VariableProximity from '../reactbits/VariableProximity';
+import ShinyText from '../reactbits/ShinyText';
 import { playChessPieceThud } from '../SoundToggle';
 
 interface HeroProps {
@@ -11,6 +13,8 @@ interface HeroProps {
 }
 
 export default function Hero({ onOpenBooking }: HeroProps) {
+  const heroLeadRef = useRef<HTMLDivElement>(null);
+
   const handleScrollToReel = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     playChessPieceThud(0.6);
@@ -38,13 +42,20 @@ export default function Hero({ onOpenBooking }: HeroProps) {
       <div className="kiln-container relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
           {/* Left Editorial Stage */}
-          <div className="lg:col-span-6 flex flex-col items-start text-left">
+          <div ref={heroLeadRef} className="lg:col-span-6 flex flex-col items-start text-left">
             <h1 className="font-serif text-[length:var(--text-display)] font-medium tracking-[-0.025em] text-ink leading-[1.02]">
               Grandmaster chess pedagogy
             </h1>
 
-            <p className="mt-5 text-[length:var(--text-lead)] text-ink-2 leading-relaxed font-sans max-w-lg">
-              One-on-one mentorship turning candidate calculation and pawn structure into master intuition.
+            <p className="mt-5 text-[length:var(--text-lead)] text-ink-2 leading-relaxed font-sans max-w-lg cursor-default">
+              <VariableProximity
+                label="One-on-one mentorship turning candidate calculation and pawn structure into master intuition."
+                fromFontVariationSettings="'wght' 400"
+                toFontVariationSettings="'wght' 760"
+                containerRef={heroLeadRef}
+                radius={95}
+                falloff="gaussian"
+              />
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
@@ -65,7 +76,7 @@ export default function Hero({ onOpenBooking }: HeroProps) {
             </div>
 
             <dl className="mt-12 pt-6 border-t border-rule w-full max-w-lg grid grid-cols-3 gap-5 text-xs sm:text-sm font-sans text-muted">
-              <div>
+              <div className="group">
                 <dt className="sr-only">Rating range</dt>
                 <dd className="text-sm sm:text-base font-medium text-ink tabular-nums flex items-baseline gap-1.5 flex-wrap font-sans">
                   <Counter
@@ -87,16 +98,16 @@ export default function Hero({ onOpenBooking }: HeroProps) {
                     className="font-mono"
                   />
                 </dd>
-                <span className="block mt-0.5">Competitor rating</span>
+                <ShinyText text="Competitor rating" className="mt-0.5 text-xs sm:text-sm" />
               </div>
-              <div>
+              <div className="group">
                 <dt className="sr-only">Format</dt>
                 <dd className="font-mono text-sm sm:text-base font-medium text-ink">
                   1-on-1 bespoke
                 </dd>
-                <span className="block mt-0.5">Tournament prep</span>
+                <ShinyText text="Tournament prep" className="mt-0.5 text-xs sm:text-sm" />
               </div>
-              <div>
+              <div className="group">
                 <dt className="sr-only">Experience</dt>
                 <dd className="font-mono text-sm sm:text-base font-medium text-ink tabular-nums">
                   <Counter
@@ -107,7 +118,7 @@ export default function Hero({ onOpenBooking }: HeroProps) {
                     suffix=" years"
                   />
                 </dd>
-                <span className="block mt-0.5">Master coaching</span>
+                <ShinyText text="Master coaching" className="mt-0.5 text-xs sm:text-sm" />
               </div>
             </dl>
           </div>
