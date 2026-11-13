@@ -28,15 +28,15 @@ const KEYFRAMES_DESKTOP = [
 ];
 
 /**
- * Mobile Flight Stations (< 768px)
+ * Mobile Flight Stations (< 768px): peripheral right-edge framing clear of boards and copy
  */
 const KEYFRAMES_MOBILE = [
-  { x: 0.00, y: 0.16,  z: 0.00,  s: 0.52, yaw: 25,  pitch: 8,  roll: -6 },
-  { x: 0.00, y: 0.36,  z: -0.25, s: 0.38, yaw: -15, pitch: 4,  roll: 2 },
-  { x: 0.00, y: 0.22,  z: -0.10, s: 0.50, yaw: -20, pitch: 3,  roll: 2 },
-  { x: 0.00, y: 0.05,  z: -0.05, s: 0.48, yaw: 25,  pitch: 2,  roll: -1 },
-  { x: 0.00, y: 0.18,  z: -0.08, s: 0.50, yaw: 30,  pitch: -2, roll: -2 },
-  { x: 0.00, y: -2.50, z: -0.30, s: 0.25, yaw: 0,   pitch: 0,  roll: 0 },
+  { x: 0.56, y: -0.34, z: -0.15, s: 0.40, yaw: 28,  pitch: 6,  roll: -4 },
+  { x: 0.68, y: -0.46, z: -0.35, s: 0.30, yaw: -18, pitch: 4,  roll:  2 },
+  { x: 0.62, y: -0.38, z: -0.20, s: 0.36, yaw: -22, pitch: 3,  roll:  2 },
+  { x: 0.68, y: -0.48, z: -0.30, s: 0.32, yaw: 24,  pitch: 2,  roll: -1 },
+  { x: 0.62, y: -0.38, z: -0.22, s: 0.36, yaw: 30,  pitch: -2, roll: -2 },
+  { x: 0.62, y: -2.50, z: -0.40, s: 0.22, yaw: 0,   pitch: 0,  roll:  0 },
 ];
 
 const splineDesktop = new THREE.CatmullRomCurve3(
@@ -162,12 +162,12 @@ export default function RookCanvas() {
       }
 
       const perchEl = document.querySelector<HTMLElement>('[data-rook-perch="true"]');
-      if (perchEl) {
+      if (perchEl && vw >= 1024) {
         const rect = perchEl.getBoundingClientRect();
-        const cardCenterX = rect.left + rect.width / 2;
+        const cardCornerX = rect.right - Math.min(rect.width * 0.14, 84);
         const cardTopY = rect.top + scrollY;
         layoutCache.perchDoc = {
-          x: (cardCenterX / vw) * 2 - 1,
+          x: (cardCornerX / vw) * 2 - 1,
           docY: cardTopY,
         };
       } else {
@@ -496,7 +496,7 @@ export default function RookCanvas() {
       const halfH = Math.tan(fovRad / 2) * camera.position.z;
       const halfW = halfH * camera.aspect;
 
-      if (perchWeight > 0.001 && layoutCache.perchDoc) {
+      if (!isMobile && layoutCache.vw >= 1024 && perchWeight > 0.001 && layoutCache.perchDoc) {
         const { x: clipX, docY } = layoutCache.perchDoc;
         const currentScreenTopY = docY - scrollY;
         const clipTopY = 1 - 2 * (currentScreenTopY / layoutCache.vh);

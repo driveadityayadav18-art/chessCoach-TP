@@ -63,7 +63,7 @@ export default function Footer({ onOpenBooking }: FooterProps) {
           <div className="md:col-span-5 flex flex-col justify-between pr-0 lg:pr-8">
             <div>
               <h2 className="sr-only">Aditya Yadav</h2>
-              <div className="w-full h-20 sm:h-24">
+              <div className="cq-footer w-full aspect-[5.4/1] min-h-[56px] max-h-[96px] sm:h-24">
                 <TechText
                   text="ADITYA YADAV"
                   fontFamily='"Boska", Georgia, serif'
@@ -102,7 +102,7 @@ export default function Footer({ onOpenBooking }: FooterProps) {
             </div>
           </div>
 
-          <div className="md:col-span-4 flex flex-col justify-between py-2 border-t md:border-t-0 md:border-l border-rule md:pl-8">
+          <div className="md:col-span-4 flex flex-col justify-between pt-8 md:py-2 border-t md:border-t-0 md:border-l border-rule md:pl-8">
             <div>
               <h3 className="font-serif text-2xl sm:text-3xl text-ink font-medium tracking-[-0.02em] leading-tight">
                 Master the board, eradicate plateaus
@@ -131,7 +131,7 @@ export default function Footer({ onOpenBooking }: FooterProps) {
                   href="https://discord.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3.5 py-2 rounded-sm bg-paper-2 border border-rule hover:border-rule-strong text-ink-2 hover:text-ink transition-colors"
+                  className="px-4 min-h-[42px] sm:min-h-0 py-2.5 sm:py-2 inline-flex items-center rounded-sm bg-paper-2 border border-rule hover:border-rule-strong text-ink-2 hover:text-ink transition-colors"
                   onMouseEnter={() => playChessPieceThud(0.4)}
                 >
                   Discord
@@ -140,7 +140,7 @@ export default function Footer({ onOpenBooking }: FooterProps) {
                   href="https://lichess.org"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3.5 py-2 rounded-sm bg-paper-2 border border-rule hover:border-rule-strong text-ink-2 hover:text-ink transition-colors"
+                  className="px-4 min-h-[42px] sm:min-h-0 py-2.5 sm:py-2 inline-flex items-center rounded-sm bg-paper-2 border border-rule hover:border-rule-strong text-ink-2 hover:text-ink transition-colors"
                   onMouseEnter={() => playChessPieceThud(0.4)}
                 >
                   Lichess club
@@ -149,7 +149,7 @@ export default function Footer({ onOpenBooking }: FooterProps) {
             </div>
           </div>
 
-          <div className="md:col-span-3 flex flex-col justify-between py-2 border-t md:border-t-0 md:border-l border-rule md:pl-8">
+          <div className="md:col-span-3 flex flex-col justify-between pt-8 md:py-2 border-t md:border-t-0 md:border-l border-rule md:pl-8">
             <div>
               <span className="font-sans text-xs font-medium text-ink-2 block mb-4">
                 Index

@@ -58,7 +58,7 @@ export default function Hero({ onOpenBooking }: HeroProps) {
               />
             </p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-4">
+            <div className="mt-7 sm:mt-8 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
               <ArrowFillButton
                 size="lg"
                 variant="primary"
@@ -69,13 +69,13 @@ export default function Hero({ onOpenBooking }: HeroProps) {
               <a
                 href="#reel"
                 onClick={handleScrollToReel}
-                className="kiln-btn kiln-btn--ghost"
+                className="kiln-btn kiln-btn--ghost justify-center"
               >
                 Watch match reel
               </a>
             </div>
 
-            <dl className="mt-12 pt-6 border-t border-rule w-full max-w-lg grid grid-cols-3 gap-5 text-xs sm:text-sm font-sans text-muted">
+            <dl className="mt-10 sm:mt-12 pt-6 border-t border-rule w-full max-w-lg grid grid-cols-2 sm:grid-cols-3 gap-x-5 gap-y-4 text-xs sm:text-sm font-sans text-muted">
               <div className="group">
                 <dt className="sr-only">Rating range</dt>
                 <dd className="text-sm sm:text-base font-medium text-ink tabular-nums flex items-baseline gap-1.5 flex-wrap font-sans">
@@ -107,7 +107,7 @@ export default function Hero({ onOpenBooking }: HeroProps) {
                 </dd>
                 <ShinyText text="Tournament prep" className="mt-0.5 text-xs sm:text-sm" />
               </div>
-              <div className="group">
+              <div className="group col-span-2 sm:col-span-1">
                 <dt className="sr-only">Experience</dt>
                 <dd className="font-mono text-sm sm:text-base font-medium text-ink tabular-nums">
                   <Counter

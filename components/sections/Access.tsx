@@ -221,8 +221,8 @@ export default function Access({ onOpenBooking }: AccessProps) {
                 Individual mentorship regimen
               </h3>
 
-              <ol ref={regimenRef} className="grid grid-cols-1 sm:grid-cols-3 gap-6 pb-8 border-b border-rule list-none">
-                <li className="group rounded-sm p-3 -m-3 border border-transparent hover:border-rule hover:bg-paper transition-colors">
+              <ol ref={regimenRef} className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 pb-8 border-b border-rule list-none">
+                <li className="group rounded-sm p-4 border border-rule sm:border-transparent hover:border-rule hover:bg-paper transition-colors">
                   <h4 className="font-serif text-lg font-medium text-ink mb-1.5">
                     <ShinyText text="1. Repertoire overhaul" tone="ink" className="font-serif" />
                   </h4>
@@ -238,7 +238,7 @@ export default function Access({ onOpenBooking }: AccessProps) {
                   </p>
                 </li>
 
-                <li className="group rounded-sm p-3 -m-3 border border-transparent hover:border-rule hover:bg-paper transition-colors">
+                <li className="group rounded-sm p-4 border border-rule sm:border-transparent hover:border-rule hover:bg-paper transition-colors">
                   <h4 className="font-serif text-lg font-medium text-ink mb-1.5">
                     <ShinyText text="2. Psychological debriefs" tone="ink" className="font-serif" />
                   </h4>
@@ -254,7 +254,7 @@ export default function Access({ onOpenBooking }: AccessProps) {
                   </p>
                 </li>
 
-                <li className="group rounded-sm p-3 -m-3 border border-transparent hover:border-rule hover:bg-paper transition-colors">
+                <li className="group rounded-sm p-4 border border-rule sm:border-transparent hover:border-rule hover:bg-paper transition-colors">
                   <h4 className="font-serif text-lg font-medium text-ink mb-1.5">
                     <ShinyText text="3. Endgame conversion" tone="ink" className="font-serif" />
                   </h4>

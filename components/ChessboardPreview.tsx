@@ -147,9 +147,9 @@ export default function ChessboardPreview({ pillarId }: ChessboardPreviewProps) 
       : null;
 
   return (
-    <div className="w-full h-full flex flex-col justify-between bg-paper-2 text-ink relative select-none">
+    <div className="cq-board w-full h-full flex flex-col justify-between bg-paper-2 text-ink relative select-none">
       {/* Workbench Header */}
-      <div className="group px-4 sm:px-6 py-3.5 bg-paper border-b border-rule flex flex-wrap items-center justify-between gap-3">
+      <div className="group px-4 sm:px-6 py-3 bg-paper border-b border-rule flex flex-wrap items-center justify-between gap-3">
         <ShinyText text={data.eco} className="font-mono text-xs" />
 
         <div className="flex items-center gap-1 p-0.5 rounded-sm bg-paper-2 border border-rule">
@@ -160,7 +160,7 @@ export default function ChessboardPreview({ pillarId }: ChessboardPreviewProps) 
               setIsAutoPlaying(false);
               playChessPieceThud(0.35);
             }}
-            className={`px-3 py-1.5 rounded text-xs font-sans font-medium transition-colors cursor-pointer ${
+            className={`px-3 min-h-[38px] sm:min-h-0 py-1.5 rounded text-xs font-sans font-medium transition-colors cursor-pointer ${
               mode === 'replay'
                 ? 'bg-paper-3 text-ink border border-rule-strong'
                 : 'text-muted hover:text-ink border border-transparent'
@@ -175,7 +175,7 @@ export default function ChessboardPreview({ pillarId }: ChessboardPreviewProps) 
               setIsAutoPlaying(false);
               resetPuzzle();
             }}
-            className={`px-3 py-1.5 rounded text-xs font-sans font-medium transition-colors cursor-pointer ${
+            className={`px-3 min-h-[38px] sm:min-h-0 py-1.5 rounded text-xs font-sans font-medium transition-colors cursor-pointer ${
               mode === 'puzzle'
                 ? 'bg-accent text-accent-ink'
                 : 'text-muted hover:text-ink border border-transparent'
@@ -187,8 +187,8 @@ export default function ChessboardPreview({ pillarId }: ChessboardPreviewProps) 
       </div>
 
       {/* Main 8x8 Chessboard */}
-      <div className="py-6 px-4 sm:px-6 my-auto flex flex-col items-center justify-center">
-        <div className="relative grid grid-cols-8 grid-rows-8 w-[264px] h-[264px] sm:w-[304px] sm:h-[304px] rounded-sm overflow-hidden border border-rule-strong">
+      <div className="py-5 sm:py-6 px-4 sm:px-6 my-auto flex flex-col items-center justify-center w-full">
+        <div className="relative grid grid-cols-8 grid-rows-8 w-full max-w-[316px] sm:max-w-[340px] aspect-square rounded-sm overflow-hidden border border-rule-strong">
           {activeBoard.map((row, rIdx) =>
             row.map((piece, cIdx) => {
               const isLight = (rIdx + cIdx) % 2 === 0;
@@ -280,8 +280,8 @@ export default function ChessboardPreview({ pillarId }: ChessboardPreviewProps) 
 
         {/* Replay or Puzzle Controls */}
         {mode === 'replay' ? (
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-1.5">
-            <div className="flex items-center gap-1 mr-1">
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-1.5 max-w-full">
+            <div className="flex items-center gap-1.5 mr-1">
               <button
                 type="button"
                 aria-label="Previous move"
@@ -291,7 +291,7 @@ export default function ChessboardPreview({ pillarId }: ChessboardPreviewProps) 
                   playChessPieceThud(0.35);
                 }}
                 disabled={stepIdx === 0}
-                className="w-8 h-8 rounded-sm border border-rule bg-paper text-ink disabled:opacity-35 flex items-center justify-center cursor-pointer"
+                className="w-11 h-11 sm:w-9 sm:h-9 rounded-sm border border-rule bg-paper text-ink disabled:opacity-35 flex items-center justify-center cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" aria-hidden="true" />
               </button>
@@ -302,7 +302,7 @@ export default function ChessboardPreview({ pillarId }: ChessboardPreviewProps) 
                   setIsAutoPlaying((p) => !p);
                   playChessPieceThud(0.4);
                 }}
-                className="w-8 h-8 rounded-sm border border-rule-strong bg-paper-3 text-ink flex items-center justify-center cursor-pointer"
+                className="w-11 h-11 sm:w-9 sm:h-9 rounded-sm border border-rule-strong bg-paper-3 text-ink flex items-center justify-center cursor-pointer"
               >
                 {isAutoPlaying ? (
                   <Pause className="w-3.5 h-3.5 fill-current" aria-hidden="true" />
@@ -319,7 +319,7 @@ export default function ChessboardPreview({ pillarId }: ChessboardPreviewProps) 
                   playChessPieceThud(0.35);
                 }}
                 disabled={stepIdx === data.steps.length - 1}
-                className="w-8 h-8 rounded-sm border border-rule bg-paper text-ink disabled:opacity-35 flex items-center justify-center cursor-pointer"
+                className="w-11 h-11 sm:w-9 sm:h-9 rounded-sm border border-rule bg-paper text-ink disabled:opacity-35 flex items-center justify-center cursor-pointer"
               >
                 <ChevronRight className="w-4 h-4" aria-hidden="true" />
               </button>
@@ -336,7 +336,7 @@ export default function ChessboardPreview({ pillarId }: ChessboardPreviewProps) 
                     setStepIdx(sIdx);
                     playChessPieceThud(0.4);
                   }}
-                  className={`font-mono text-xs px-2.5 py-1 rounded-sm transition-colors cursor-pointer border ${
+                  className={`font-mono text-xs px-3 min-h-[38px] sm:min-h-[32px] py-1.5 sm:py-1 rounded-sm transition-colors cursor-pointer border ${
                     isActive
                       ? 'bg-accent text-accent-ink border-transparent font-medium'
                       : 'border-rule bg-paper text-ink-2 hover:text-ink hover:border-rule-strong'
@@ -352,14 +352,14 @@ export default function ChessboardPreview({ pillarId }: ChessboardPreviewProps) 
             <button
               type="button"
               onClick={() => setShowHint((h) => !h)}
-              className="px-3.5 py-1.5 rounded-sm border border-rule bg-paper text-xs font-sans text-ink-2 hover:text-ink hover:border-rule-strong transition-colors cursor-pointer"
+              className="px-4 min-h-[42px] sm:min-h-[34px] py-2 sm:py-1.5 rounded-sm border border-rule bg-paper text-xs font-sans text-ink-2 hover:text-ink hover:border-rule-strong transition-colors cursor-pointer"
             >
               {showHint ? 'Hide hint' : 'Show hint'}
             </button>
             <button
               type="button"
               onClick={resetPuzzle}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-sm border border-rule bg-paper text-xs font-sans text-ink-2 hover:text-ink hover:border-rule-strong transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-4 min-h-[42px] sm:min-h-[34px] py-2 sm:py-1.5 rounded-sm border border-rule bg-paper text-xs font-sans text-ink-2 hover:text-ink hover:border-rule-strong transition-colors cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />
               <span>Reset board</span>

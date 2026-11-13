@@ -52,7 +52,7 @@ export function ChessPieceGlyph({ code }: { code: string }) {
       height={28}
       viewBox="0 0 45 45"
       aria-hidden="true"
-      className="w-[24px] h-[24px] sm:w-[28px] sm:h-[28px] shrink-0 select-none pointer-events-none block"
+      className="w-[68%] h-[68%] min-w-[18px] min-h-[18px] shrink-0 select-none pointer-events-none block"
       style={{
         color: isWhite ? 'var(--piece-white)' : 'var(--piece-black)',
       }}

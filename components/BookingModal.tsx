@@ -128,7 +128,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     <AnimatePresence>
       {isOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-paper/95"
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-paper/95"
           onClick={() => {
             playChessPieceThud(0.7);
             onClose();
@@ -139,11 +139,11 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
         >
           <motion.div
             ref={modalRef}
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 8 }}
+            exit={{ opacity: 0, y: 12 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-lg p-7 sm:p-8 bg-paper-2 text-ink rounded-well border border-rule-strong overflow-hidden"
+            className="relative w-full max-w-lg max-h-[92dvh] overflow-y-auto overscroll-contain p-6 pb-[max(1.75rem,env(safe-area-inset-bottom))] sm:p-8 bg-paper-2 text-ink rounded-t-card sm:rounded-well border border-rule-strong"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -152,7 +152,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                 playChessPieceThud(0.7);
                 onClose();
               }}
-              className="absolute top-6 right-6 w-9 h-9 rounded-full flex items-center justify-center text-muted hover:text-ink hover:bg-paper-3 transition-colors cursor-pointer border border-rule focus-visible:outline-2 focus-visible:outline-focus"
+              className="absolute top-5 right-5 sm:top-6 sm:right-6 w-11 h-11 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-muted hover:text-ink hover:bg-paper-3 transition-colors cursor-pointer border border-rule focus-visible:outline-2 focus-visible:outline-focus"
               aria-label="Close consultation dialog"
             >
               <X className="w-4 h-4" aria-hidden="true" />

@@ -96,12 +96,18 @@ p {
   font-variant-numeric: lining-nums tabular-nums;
 }
 
-/* KILN CONTAINER */
+/* KILN CONTAINER & NATIVE @CONTAINER QUERIES */
 .kiln-container {
   width: 100%;
   max-width: var(--container-max);
   margin-inline: auto;
   padding-inline: var(--gutter);
+}
+
+.cq-reel,
+.cq-board,
+.cq-footer {
+  container-type: inline-size;
 }
 
 /* KILN SURFACES */
@@ -231,11 +237,11 @@ section {
 .hero {
   background: var(--color-paper);
   color: var(--color-ink);
-  min-height: 94dvh;
+  min-height: min(92dvh, 880px);
   display: flex;
   align-items: center;
   position: relative;
-  padding: clamp(92px, 12dvh, 132px) 0 clamp(48px, 7dvh, 80px);
+  padding: clamp(88px, 11dvh, 132px) 0 clamp(44px, 6dvh, 80px);
   overflow: clip;
 }
 

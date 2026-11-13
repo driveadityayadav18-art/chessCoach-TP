@@ -44,6 +44,7 @@ export default function MatchReelPlayer() {
 
   const progressRef = useRef(0);
   const lastUiPercentRef = useRef(-1);
+  const isDraggingRef = useRef(false);
   const isPlayingRef = useRef(false);
   const isHoverPausedRef = useRef(false);
   const userPausedRef = useRef(false);
@@ -474,12 +475,12 @@ export default function MatchReelPlayer() {
           setIsHoverPaused(false);
         }
       }}
-      className="kiln-well w-full overflow-hidden"
+      className="kiln-well cq-reel w-full overflow-hidden"
     >
       {/* Chapter Tabs & Clock */}
-      <div className="px-4 sm:px-6 py-3.5 bg-paper border-b border-rule flex flex-wrap items-center justify-between gap-3">
+      <div className="px-4 sm:px-6 py-3 bg-paper border-b border-rule flex flex-wrap items-center justify-between gap-3">
         <div
-          className="flex items-center gap-2 overflow-x-auto no-scrollbar"
+          className="flex items-center gap-2 overflow-x-auto no-scrollbar max-w-full"
           role="tablist"
           aria-label="Match film chapters"
         >
@@ -492,7 +493,7 @@ export default function MatchReelPlayer() {
                 role="tab"
                 aria-selected={active}
                 onClick={() => selectChapter(idx)}
-                className={`px-3.5 py-2 rounded-sm text-xs font-sans whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
+                className={`px-3.5 min-h-[40px] sm:min-h-0 py-2 rounded-sm text-xs font-sans whitespace-nowrap shrink-0 transition-colors cursor-pointer ${
                   active
                     ? 'bg-paper-3 text-ink font-medium border border-rule-strong'
                     : 'text-muted hover:text-ink border border-transparent'
@@ -561,6 +562,13 @@ export default function MatchReelPlayer() {
 
       {/* Timeline Scrubber & Annotation Bar */}
       <div className="bg-paper border-t border-rule px-4 sm:px-6 py-4 space-y-3.5">
+        <div className="flex items-baseline justify-between gap-2 sm:hidden">
+          <span className="font-serif text-lg text-ink font-medium leading-tight truncate">
+            {currentChapter.title}
+          </span>
+          <span className="font-mono text-xs text-muted shrink-0">{currentKeyframe.evalLabel}</span>
+        </div>
+
         <div
           ref={progressBarRef}
           role="slider"
@@ -569,6 +577,27 @@ export default function MatchReelPlayer() {
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={Math.round(progress * 100)}
+          onPointerDown={(e) => {
+            isDraggingRef.current = true;
+            e.currentTarget.setPointerCapture(e.pointerId);
+            handleScrub(e.clientX);
+          }}
+          onPointerMove={(e) => {
+            if (isDraggingRef.current) {
+              handleScrub(e.clientX);
+            }
+          }}
+          onPointerUp={(e) => {
+            if (isDraggingRef.current) {
+              isDraggingRef.current = false;
+              if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+                e.currentTarget.releasePointerCapture(e.pointerId);
+              }
+            }
+          }}
+          onPointerCancel={() => {
+            isDraggingRef.current = false;
+          }}
           onClick={(e) => handleScrub(e.clientX)}
           onKeyDown={(e) => {
             if (e.key === 'ArrowRight') {
@@ -580,7 +609,7 @@ export default function MatchReelPlayer() {
               togglePlay();
             }
           }}
-          className="relative h-6 flex items-center cursor-pointer"
+          className="relative h-9 sm:h-7 flex items-center cursor-pointer touch-none"
         >
           <div className="w-full h-1.5 rounded-pill bg-paper-3 overflow-hidden relative">
             <div
@@ -596,13 +625,14 @@ export default function MatchReelPlayer() {
               type="button"
               title={`${kf.notation}: ${kf.caption}`}
               aria-label={`Jump to ${kf.notation}`}
+              onPointerDown={(e) => e.stopPropagation()}
               onClick={(e) => {
                 e.stopPropagation();
                 syncProgress(kf.t);
                 playChessPieceThud(0.45);
               }}
               style={{ left: `${kf.t * 100}%` }}
-              className={`absolute -translate-x-1/2 w-3 h-3 rounded-pill border transition-transform cursor-pointer ${
+              className={`absolute -translate-x-1/2 w-3.5 h-3.5 sm:w-3 sm:h-3 rounded-pill border transition-transform cursor-pointer ${
                 kIdx <= activeKeyframeIdx
                   ? 'bg-accent border-paper scale-110'
                   : 'bg-paper-3 border-rule-strong hover:scale-125'
@@ -617,7 +647,7 @@ export default function MatchReelPlayer() {
               type="button"
               onClick={() => selectChapter(chapterIdx - 1)}
               aria-label="Previous chapter"
-              className="w-9 h-9 rounded-sm border border-rule hover:border-rule-strong bg-paper-2 text-ink flex items-center justify-center transition-colors cursor-pointer"
+              className="w-11 h-11 sm:w-9 sm:h-9 rounded-sm border border-rule hover:border-rule-strong bg-paper-2 text-ink flex items-center justify-center transition-colors cursor-pointer"
             >
               <SkipBack className="w-4 h-4" aria-hidden="true" />
             </button>
@@ -626,7 +656,7 @@ export default function MatchReelPlayer() {
               type="button"
               onClick={togglePlay}
               aria-label={isPlaying ? 'Pause match reel' : 'Play match reel'}
-              className="h-9 px-4 rounded-pill bg-ink text-paper font-sans text-xs font-medium flex items-center gap-2 hover:bg-ink-2 transition-colors cursor-pointer"
+              className="h-11 sm:h-9 px-4 rounded-pill bg-ink text-paper font-sans text-xs font-medium flex items-center gap-2 hover:bg-ink-2 transition-colors cursor-pointer"
             >
               {isPlaying ? (
                 <>
@@ -645,7 +675,7 @@ export default function MatchReelPlayer() {
               type="button"
               onClick={() => selectChapter(chapterIdx + 1)}
               aria-label="Next chapter"
-              className="w-9 h-9 rounded-sm border border-rule hover:border-rule-strong bg-paper-2 text-ink flex items-center justify-center transition-colors cursor-pointer"
+              className="w-11 h-11 sm:w-9 sm:h-9 rounded-sm border border-rule hover:border-rule-strong bg-paper-2 text-ink flex items-center justify-center transition-colors cursor-pointer"
             >
               <SkipForward className="w-4 h-4" aria-hidden="true" />
             </button>
@@ -654,7 +684,7 @@ export default function MatchReelPlayer() {
               type="button"
               onClick={handleRestart}
               aria-label="Restart chapter"
-              className="w-9 h-9 rounded-sm border border-rule hover:border-rule-strong bg-paper-2 text-muted hover:text-ink flex items-center justify-center transition-colors cursor-pointer"
+              className="w-11 h-11 sm:w-9 sm:h-9 rounded-sm border border-rule hover:border-rule-strong bg-paper-2 text-muted hover:text-ink flex items-center justify-center transition-colors cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
@@ -665,7 +695,7 @@ export default function MatchReelPlayer() {
                   key={rate}
                   type="button"
                   onClick={() => setPlaybackRate(rate)}
-                  className={`px-2 py-1 rounded text-xs font-sans tabular-nums transition-colors cursor-pointer ${
+                  className={`px-2.5 sm:px-2 min-h-[38px] sm:min-h-0 py-1 rounded text-xs font-sans tabular-nums transition-colors cursor-pointer ${
                     playbackRate === rate
                       ? 'bg-paper-3 text-ink font-medium'
                       : 'text-muted hover:text-ink'

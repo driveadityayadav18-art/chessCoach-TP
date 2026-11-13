@@ -108,7 +108,7 @@ export default function SoundToggle({
       aria-pressed={isActive}
       className={`cursor-pointer select-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${
         isFloating
-          ? 'bg-paper-2 border border-rule min-h-[44px] px-4 rounded-pill flex items-center gap-2 text-sm font-sans font-medium text-ink transition-colors duration-200 hover:bg-paper-3'
+          ? 'bg-paper-2 border border-rule w-11 h-11 sm:w-auto sm:min-h-[44px] sm:px-4 rounded-pill flex items-center justify-center gap-2 text-sm font-sans font-medium text-ink transition-colors duration-200 hover:bg-paper-3'
           : 'relative inline-flex items-center justify-center p-2 rounded-well'
       } ${className}`}
       aria-label={
@@ -121,7 +121,7 @@ export default function SoundToggle({
         <VolumeX className="w-4 h-4 text-muted shrink-0" aria-hidden="true" />
       )}
       {isFloating && (
-        <span className={isActive ? 'text-ink' : 'text-muted'}>
+        <span className={`hidden sm:inline ${isActive ? 'text-ink' : 'text-muted'}`}>
           {isActive ? 'Sound on' : 'Tactile sound'}
         </span>
       )}
@@ -130,7 +130,7 @@ export default function SoundToggle({
 
   if (isFloating) {
     return (
-      <div className="fixed z-30 left-[var(--gutter)] bottom-5">
+      <div className="fixed z-30 left-[var(--gutter)] bottom-[max(1rem,env(safe-area-inset-bottom))]">
         <Magnet padding={44} magnetStrength={4} maxOffset={12}>
           {buttonNode}
         </Magnet>

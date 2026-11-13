@@ -84,7 +84,7 @@ export default function FlexibleAccordion({ onOpenBooking }: FlexibleAccordionPr
                     tabIndex={isActive ? 0 : -1}
                     onClick={() => switchTab(idx)}
                     onKeyDown={(e) => handleKeyDown(e, idx)}
-                    className={`font-sans text-xs sm:text-sm whitespace-nowrap shrink-0 px-3 py-1.5 rounded-sm transition-colors cursor-pointer ${
+                    className={`font-sans text-xs sm:text-sm whitespace-nowrap shrink-0 px-3.5 min-h-[40px] sm:min-h-0 py-2 sm:py-1.5 rounded-sm transition-colors cursor-pointer ${
                       isActive
                         ? 'text-ink font-medium bg-paper-2 border border-rule-strong'
                         : 'text-muted hover:text-ink border border-transparent'
@@ -169,12 +169,12 @@ export default function FlexibleAccordion({ onOpenBooking }: FlexibleAccordionPr
                 Study <strong className="text-ink font-medium">{activeIndex + 1}</strong> of{' '}
                 {CURRICULUM_STUDIES.length}
               </span>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1.5">
                 <button
                   type="button"
                   aria-label="Previous study"
                   onClick={prevTab}
-                  className="w-8 h-8 rounded-sm border border-rule hover:border-rule-strong bg-paper-2 text-ink flex items-center justify-center transition-colors cursor-pointer"
+                  className="w-11 h-11 sm:w-9 sm:h-9 rounded-sm border border-rule hover:border-rule-strong bg-paper-2 text-ink flex items-center justify-center transition-colors cursor-pointer"
                 >
                   <ChevronLeft className="w-4 h-4" aria-hidden="true" />
                 </button>
@@ -182,7 +182,7 @@ export default function FlexibleAccordion({ onOpenBooking }: FlexibleAccordionPr
                   type="button"
                   aria-label="Next study"
                   onClick={nextTab}
-                  className="w-8 h-8 rounded-sm border border-rule hover:border-rule-strong bg-paper-2 text-ink flex items-center justify-center transition-colors cursor-pointer"
+                  className="w-11 h-11 sm:w-9 sm:h-9 rounded-sm border border-rule hover:border-rule-strong bg-paper-2 text-ink flex items-center justify-center transition-colors cursor-pointer"
                 >
                   <ChevronRight className="w-4 h-4" aria-hidden="true" />
                 </button>
